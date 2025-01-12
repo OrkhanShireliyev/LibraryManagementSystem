@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,7 +31,7 @@ public class CategoryServiceImpl implements CategoryServiceInter {
             categoryRepository.save(category);
             log.info("Successfully created{}", category);
             return new ResponseEntity<>(categoryRequest, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error occurred when creating category!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -38,27 +39,73 @@ public class CategoryServiceImpl implements CategoryServiceInter {
 
     @Override
     public ResponseEntity<Category> update(Long id, String name) {
-        Category category=categoryRepository.findById(id).get();
-        if (category==null){
-            throw new NoSuchElementException("");
+        Category category = categoryRepository.findById(id).get();
+        if (category == null) {
+            throw new NoSuchElementException("Not found author by id=" + id);
         }
 
-
-        return null;
+        try {
+            category.setName(name);
+            categoryRepository.save(category);
+            log.info("Successfully updated{}", category);
+            return new ResponseEntity<>(category, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred when updating category{}",category);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<List<CategoryDTO>> getAllCategory() {
-        return null;
+        List<Category> categories = categoryRepository.findAll();
+        if (categories == null) {
+            throw new NullPointerException("Not found categories!");
+        }
+
+        try {
+            List<CategoryDTO> categoryDTOS = new ArrayList<>();
+            CategoryDTO categoryDTO;
+            for (Category category : categories) {
+                categoryDTO = categoryMapper.categoryToCategoryDTO(category);
+                categoryDTOS.add(categoryDTO);
+            }
+            log.info("Successfully retrieved{}", categoryDTOS);
+            return new ResponseEntity<>(categoryDTOS, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred when retrieving categories!");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
     public ResponseEntity<CategoryDTO> getCategoryById(Long id) {
-        return null;
+        Category category = categoryRepository.findById(id).get();
+        if (category == null) {
+            throw new NoSuchElementException("Not found author by id=" + id);
+        }
+        try {
+            CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
+            log.info("Successfully retrieved{}", categoryDTO);
+            return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred when retrieving category{}",category);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-
+        Category category = categoryRepository.findById(id).get();
+        if (category == null) {
+            throw new NoSuchElementException("Not found author by id=" + id);
+        }
+        try {
+            categoryRepository.deleteById(id);
+            log.info("Successfully deleted{}", category);
+            return new ResponseEntity<>("Successfully deleted{"+category+"}", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred when deleting category by id=" + id);
+            return new ResponseEntity<>("Error occurred when deleting{"+category+"}", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -24,30 +24,31 @@ public class AuthorController {
         return "save";
     }
 
-    @PutMapping("/update/{id}/{name}/{surname}")
+    @PostMapping("/update/{id}/{name}/{surname}")
     String update(@PathVariable Long id,@PathVariable String name,@PathVariable String surname, Model model){
-        Author author= authorServiceInter.update(id,name,surname).getBody();
-        model.addAttribute("author",author);
+        Author authorUpdate= authorServiceInter.update(id,name,surname).getBody();
+        model.addAttribute("authorUpdate",authorUpdate);
         return "update";
     }
 
     @GetMapping("/authors")
     String getAllAuthors(Model model){
         List<AuthorDTO> authorDTOS=authorServiceInter.getAllAuthors().getBody();
-        model.addAttribute("author",authorDTOS);
+        model.addAttribute("authorDTOS",authorDTOS);
         return "authors";
     }
 
     @GetMapping("/getById/{id}")
     String getAuthorById(@PathVariable Long id,Model model){
         AuthorDTO authorDTO=authorServiceInter.getAuthorById(id).getBody();
-        model.addAttribute("author",authorDTO);
+        model.addAttribute("authorDTO",authorDTO);
         return "getById";
     }
 
-    @DeleteMapping("/delete/{id}")
-    String delete(@PathVariable Long id){
+    @PostMapping("/delete/{id}")
+    String delete(@PathVariable Long id,Model model){
         authorServiceInter.delete(id);
+        model.addAttribute("successMessage", "Author successfully deleted!");
         return "delete";
     }
 }

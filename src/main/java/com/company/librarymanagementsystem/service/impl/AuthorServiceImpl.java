@@ -100,7 +100,7 @@ public class AuthorServiceImpl implements AuthorServiceInter {
         }
         try{
             authorRepository.deleteById(id);
-            log.info("Successfully deleted author by id="+id);
+            log.info("Successfully deleted{}",author);
         }catch (Exception e){
             log.error("Error occurred when deleting author by id="+id);
         }
