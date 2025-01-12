@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="Orkhan Shireliyev">
+        <createTable tableName="author">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="author_id_pk" />
+            </column>
+            <column name="name" type="varchar(10)"></column>
+            <column name="surname" type="varchar(50)"></column>
+        </createTable>
+        <addAutoIncrement tableName="author" columnName="id" columnDataType="bigint" startWith="1" />
+    </changeSet>
+</databaseChangeLog>

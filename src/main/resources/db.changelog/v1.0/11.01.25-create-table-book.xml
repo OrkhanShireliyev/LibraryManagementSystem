@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="2" author="Orkhan Shireliyev">
+        <createTable tableName="book">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="book_id_pk" />
+            </column>
+            <column name="name" type="varchar(250)"></column>
+            <column name="isbn" type="varchar(250)"></column>
+            <column name="published_year" type="varchar(50)"></column>
+            <column name="image" type="varchar(250)"></column>
+            <column name="stock_count" type="bigint"></column>
+            <column name="category_id" type="bigint"></column>
+        </createTable>
+        <addAutoIncrement tableName="book" columnName="id" columnDataType="bigint" startWith="1"/>
+    </changeSet>
+</databaseChangeLog>
