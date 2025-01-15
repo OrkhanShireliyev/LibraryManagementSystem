@@ -24,9 +24,13 @@ public class AuthorController {
         return "save";
     }
 
-    @PostMapping("/update/{id}/{name}/{surname}")
-    String update(@PathVariable Long id,@PathVariable String name,@PathVariable String surname, Model model){
-        Author authorUpdate= authorServiceInter.update(id,name,surname).getBody();
+    @PostMapping("/update/{id}/{name}/{surname}/{bookId}")
+    String update(@PathVariable Long id,
+                  @PathVariable String name,
+                  @PathVariable String surname,
+                  @PathVariable List<Long> bookId,
+                  Model model){
+        Author authorUpdate= authorServiceInter.update(id,name,surname,bookId).getBody();
         model.addAttribute("authorUpdate",authorUpdate);
         return "update";
     }

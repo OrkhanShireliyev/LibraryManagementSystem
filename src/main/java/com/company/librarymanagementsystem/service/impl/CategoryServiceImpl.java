@@ -2,7 +2,9 @@ package com.company.librarymanagementsystem.service.impl;
 
 import com.company.librarymanagementsystem.dto.CategoryDTO;
 import com.company.librarymanagementsystem.mapper.CategoryMapper;
+import com.company.librarymanagementsystem.model.Book;
 import com.company.librarymanagementsystem.model.Category;
+import com.company.librarymanagementsystem.repository.BookRepository;
 import com.company.librarymanagementsystem.repository.CategoryRepository;
 import com.company.librarymanagementsystem.request.CategoryRequest;
 import com.company.librarymanagementsystem.service.inter.CategoryServiceInter;
@@ -24,6 +26,8 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    private final BookRepository bookRepository;
+
     @Override
     public ResponseEntity<CategoryRequest> save(CategoryRequest categoryRequest) {
         try {
@@ -38,10 +42,19 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     }
 
     @Override
-    public ResponseEntity<Category> update(Long id, String name) {
+    public ResponseEntity<Category> update(Long id, String name,List<Long> bookId) {
         Category category = categoryRepository.findById(id).get();
         if (category == null) {
-            throw new NoSuchElementException("Not found author by id=" + id);
+            throw new NoSuchElementException("Not found category by id=" + id);
+        }
+
+        List<Book> books=new ArrayList<>();
+        for (Long bookById:bookId){
+            Book findBookById=bookRepository.findById(bookById).get();
+            if (findBookById==null){
+                throw new NoSuchElementException("Not found book by id="+bookById);
+            }
+            books.add(findBookById);
         }
 
         try {
@@ -81,7 +94,7 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     public ResponseEntity<CategoryDTO> getCategoryById(Long id) {
         Category category = categoryRepository.findById(id).get();
         if (category == null) {
-            throw new NoSuchElementException("Not found author by id=" + id);
+            throw new NoSuchElementException("Not found category by id=" + id);
         }
         try {
             CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
@@ -97,7 +110,7 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     public ResponseEntity<String> delete(Long id) {
         Category category = categoryRepository.findById(id).get();
         if (category == null) {
-            throw new NoSuchElementException("Not found author by id=" + id);
+            throw new NoSuchElementException("Not found category by id=" + id);
         }
         try {
             categoryRepository.deleteById(id);

@@ -24,9 +24,9 @@ public class CategoryController {
         return "save";
     }
 
-    @PostMapping("/update/{id}/{name}")
-    String update(@PathVariable Long id, @PathVariable String name, Model model){
-        Category categoryUpdate=categoryServiceInter.update(id,name).getBody();
+    @PostMapping("/update/{id}/{name}/{bookId}")
+    String update(@PathVariable Long id, @PathVariable String name,List<Long> bookId, Model model){
+        Category categoryUpdate=categoryServiceInter.update(id,name,bookId).getBody();
         model.addAttribute("categoryUpdate",categoryUpdate);
         return "update";
     }
@@ -47,8 +47,8 @@ public class CategoryController {
 
    @PostMapping("/delete/{id}")
    String delete(@PathVariable Long id,Model model){
-        categoryServiceInter.delete(id);
-       model.addAttribute("successMessage", "Author successfully deleted!");
+       categoryServiceInter.delete(id);
+       model.addAttribute("successMessage", "Category successfully deleted!");
        return "delete";
     }
 }

@@ -3,7 +3,9 @@ package com.company.librarymanagementsystem.service.impl;
 import com.company.librarymanagementsystem.dto.AuthorDTO;
 import com.company.librarymanagementsystem.mapper.AuthorMapper;
 import com.company.librarymanagementsystem.model.Author;
+import com.company.librarymanagementsystem.model.Book;
 import com.company.librarymanagementsystem.repository.AuthorRepository;
+import com.company.librarymanagementsystem.repository.BookRepository;
 import com.company.librarymanagementsystem.request.AuthorRequest;
 import com.company.librarymanagementsystem.service.inter.AuthorServiceInter;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,15 @@ public class AuthorServiceImpl implements AuthorServiceInter {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
 
+    private final BookRepository bookRepository;
+
     @Override
-    public ResponseEntity<Author> save(AuthorRequest authorRequest) {
+    public ResponseEntity<AuthorRequest> save(AuthorRequest authorRequest) {
         try {
             Author author = authorMapper.authorRequestToAuthor(authorRequest);
             authorRepository.save(author);
             log.info("Successfully created{}",author);
-            return new ResponseEntity<>(author, HttpStatus.OK);
+            return new ResponseEntity<>(authorRequest, HttpStatus.OK);
         }catch (Exception e){
             log.error("Error occurred when creating authors!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -38,14 +42,23 @@ public class AuthorServiceImpl implements AuthorServiceInter {
     }
 
     @Override
-    public ResponseEntity<Author> update(Long id,String name, String surname) {
-        Author author=authorRepository.findById(id).get();
-        if (author==null){
-            throw new NoSuchElementException("Not found author by id="+id);
+    public ResponseEntity<Author> update(Long id,String name, String surname,List<Long> bookId) {
+        Author author=authorRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found author by id="+id));
+
+        List<Book> books=new ArrayList<>();
+        for (Long bookById:bookId){
+            Book findBookById=bookRepository.findById(bookById).get();
+            if (findBookById==null){
+                throw new NoSuchElementException("Not found book by id="+bookById);
+            }
+            books.add(findBookById);
         }
+
         try{
             author.setName(name);
             author.setSurname(surname);
+            author.setBooks(books);
             authorRepository.save(author);
             log.info("Successfully updated{}",author);
             return new ResponseEntity<>(author, HttpStatus.OK);
@@ -58,12 +71,12 @@ public class AuthorServiceImpl implements AuthorServiceInter {
     @Override
     public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
         List<Author> authors=authorRepository.findAll();
-        if (authors==null){
-            throw new NullPointerException("Not found authors!");
+        if (authors.isEmpty()){
+            throw new NoSuchElementException("Not found authors!");
         }
         List<AuthorDTO>authorDTOS=new ArrayList<>();
+        AuthorDTO authorDTO;
         try {
-            AuthorDTO authorDTO;
             for (Author author : authors) {
                 authorDTO = authorMapper.authorToAuthorDTO(author);
                 authorDTOS.add(authorDTO);
@@ -78,10 +91,9 @@ public class AuthorServiceImpl implements AuthorServiceInter {
 
     @Override
     public ResponseEntity<AuthorDTO> getAuthorById(Long id) {
-        Author author=authorRepository.findById(id).get();
-        if (author==null){
-            throw new NoSuchElementException("Not found author by id="+id);
-        }
+        Author author=authorRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found author by id="+id));
+
         try{
             AuthorDTO authorDTO=authorMapper.authorToAuthorDTO(author);
             log.info("Successfully retrieved{}",authorDTO);
@@ -94,10 +106,8 @@ public class AuthorServiceImpl implements AuthorServiceInter {
 
     @Override
     public void delete(Long id) {
-        Author author=authorRepository.findById(id).get();
-        if (author==null){
-            throw new NoSuchElementException("Not found author by id="+id);
-        }
+        Author author=authorRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found author by id="+id));
         try{
             authorRepository.deleteById(id);
             log.info("Successfully deleted{}",author);

@@ -11,9 +11,9 @@ import java.util.List;
 @Service
 public interface AuthorServiceInter {
 
-    ResponseEntity<Author> save(AuthorRequest authorRequest);
+    ResponseEntity<AuthorRequest> save(AuthorRequest authorRequest);
 
-    ResponseEntity<Author> update(Long id,String name, String surname);
+    ResponseEntity<Author> update(Long id,String name, String surname,List<Long> bookId);
 
     ResponseEntity<List<AuthorDTO>> getAllAuthors();
 

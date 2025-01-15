@@ -13,7 +13,7 @@ public interface CategoryServiceInter {
 
     ResponseEntity<CategoryRequest> save(CategoryRequest categoryRequest);
 
-    ResponseEntity<Category> update(Long id,String name);
+    ResponseEntity<Category> update(Long id,String name,List<Long> bookId);
 
     ResponseEntity<List<CategoryDTO>> getAllCategory();
 
