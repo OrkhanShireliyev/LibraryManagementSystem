@@ -43,17 +43,13 @@ public class CategoryServiceImpl implements CategoryServiceInter {
 
     @Override
     public ResponseEntity<Category> update(Long id, String name,List<Long> bookId) {
-        Category category = categoryRepository.findById(id).get();
-        if (category == null) {
-            throw new NoSuchElementException("Not found category by id=" + id);
-        }
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
 
         List<Book> books=new ArrayList<>();
         for (Long bookById:bookId){
-            Book findBookById=bookRepository.findById(bookById).get();
-            if (findBookById==null){
-                throw new NoSuchElementException("Not found book by id="+bookById);
-            }
+            Book findBookById=bookRepository.findById(bookById)
+                 .orElseThrow(()->new NoSuchElementException("Not found book by id=" + bookById));
             books.add(findBookById);
         }
 
@@ -71,15 +67,14 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     @Override
     public ResponseEntity<List<CategoryDTO>> getAllCategory() {
         List<Category> categories = categoryRepository.findAll();
-        if (categories == null) {
-            throw new NullPointerException("Not found categories!");
+        if (categories.isEmpty()) {
+            throw new NoSuchElementException("Not found categories!");
         }
 
         try {
             List<CategoryDTO> categoryDTOS = new ArrayList<>();
-            CategoryDTO categoryDTO;
             for (Category category : categories) {
-                categoryDTO = categoryMapper.categoryToCategoryDTO(category);
+                CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
                 categoryDTOS.add(categoryDTO);
             }
             log.info("Successfully retrieved{}", categoryDTOS);
@@ -92,10 +87,9 @@ public class CategoryServiceImpl implements CategoryServiceInter {
 
     @Override
     public ResponseEntity<CategoryDTO> getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id).get();
-        if (category == null) {
-            throw new NoSuchElementException("Not found category by id=" + id);
-        }
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
+
         try {
             CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
             log.info("Successfully retrieved{}", categoryDTO);
@@ -108,10 +102,8 @@ public class CategoryServiceImpl implements CategoryServiceInter {
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-        Category category = categoryRepository.findById(id).get();
-        if (category == null) {
-            throw new NoSuchElementException("Not found category by id=" + id);
-        }
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
         try {
             categoryRepository.deleteById(id);
             log.info("Successfully deleted{}", category);

@@ -59,17 +59,13 @@ public class BookServiceImpl implements BookServiceInter {
                                        List<Long> authorId,
                                        Long categoryId,
                                        List<Long> studentId) {
-        Book book = bookRepository.findById(id).get();
-        if (book == null) {
-            throw new NoSuchElementException("Not found book by id=" + id);
-        }
+        Book book = bookRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found author by id=" + id));
 
         List<Author> authors = new ArrayList<>();
         for (Long authorById : authorId) {
-            Author findAuthorById = authorRepository.findById(authorById).get();
-            if (findAuthorById == null) {
-                throw new NoSuchElementException("Not found author by id=" + authorById);
-            }
+            Author findAuthorById = authorRepository.findById(authorById)
+                    .orElseThrow(()->new NoSuchElementException("Not found author by id=" + authorById));
             authors.add(findAuthorById);
         }
 
@@ -107,15 +103,14 @@ public class BookServiceImpl implements BookServiceInter {
     @Override
     public ResponseEntity<List<BookDTO>> getAllBooks() {
         List<Book>books=bookRepository.findAll();
-        if (books==null){
-            throw new NullPointerException("Not found books!");
+        if (books.isEmpty()){
+            throw new NoSuchElementException("Not found books!");
         }
-
         List<BookDTO>bookDTOS=new ArrayList<>();
-        BookDTO bookDTO;
+
         try{
             for(Book book:books){
-                bookDTO=bookMapper.bookToBookDTO(book);
+                BookDTO bookDTO=bookMapper.bookToBookDTO(book);
                 bookDTOS.add(bookDTO);
             }
             log.info("Successfully retrieved{}",bookDTOS);
@@ -139,7 +134,6 @@ public class BookServiceImpl implements BookServiceInter {
         log.error("Error occurred when retrieving book by id="+id);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
     }
 
     @Override

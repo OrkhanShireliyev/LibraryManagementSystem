@@ -48,10 +48,8 @@ public class AuthorServiceImpl implements AuthorServiceInter {
 
         List<Book> books=new ArrayList<>();
         for (Long bookById:bookId){
-            Book findBookById=bookRepository.findById(bookById).get();
-            if (findBookById==null){
-                throw new NoSuchElementException("Not found book by id="+bookById);
-            }
+            Book findBookById=bookRepository.findById(bookById)
+                    .orElseThrow(()->new NoSuchElementException("Not found book by id="+bookById));
             books.add(findBookById);
         }
 

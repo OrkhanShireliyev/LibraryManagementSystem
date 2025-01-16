@@ -52,14 +52,13 @@ public class StudentServiceImpl implements StudentServiceInter {
                                           int age,
                                           List<Long> bookId,
                                           List<Long> orderId) {
-        Student student=studentRepository.findById(id).get();
-        if (student==null){
-            throw new NoSuchElementException("Not found student by id="+id);
-        }
+        Student student=studentRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found student by id="+id));
 
         List<Book> books=new ArrayList<>();
         for (Long bookById:bookId){
-            Book findBookById=bookRepository.findById(bookById).get();
+            Book findBookById=bookRepository.findById(bookById)
+                .orElseThrow(()->new NoSuchElementException("Not found book by id="+bookById));
             if (findBookById==null){
                 throw new NoSuchElementException("Not found book by id="+bookById);
             }
@@ -68,10 +67,8 @@ public class StudentServiceImpl implements StudentServiceInter {
 
         List<Order> orders=new ArrayList<>();
         for (Long orderById: orderId){
-            Order findOrderById=orderRepository.findById(orderById).get();
-            if (findOrderById==null){
-                throw new NoSuchElementException("Not found order by id="+orderById);
-            }
+            Order findOrderById=orderRepository.findById(orderById)
+                    .orElseThrow(()->new NoSuchElementException("Not found order by id="+orderById));
             orders.add(findOrderById);
         }
 
@@ -94,16 +91,15 @@ public class StudentServiceImpl implements StudentServiceInter {
     @Override
     public ResponseEntity<List<StudentDTO>> getAllStudent() {
         List<Student> students=studentRepository.findAll();
-        if(students==null){
-            throw new NullPointerException("Not found students!");
+        if(students.isEmpty()){
+            throw new NoSuchElementException("Not found students!");
         }
 
-        StudentDTO studentDTO;
         List<StudentDTO> studentDTOS=new ArrayList<>();
 
         try{
             for(Student student: students){
-                studentDTO=studentMapper.studentToStudentDTO(student);
+                StudentDTO studentDTO=studentMapper.studentToStudentDTO(student);
                 studentDTOS.add(studentDTO);
             }
             log.info("Successfully retrieved{}",studentDTOS);
@@ -116,13 +112,11 @@ public class StudentServiceImpl implements StudentServiceInter {
 
     @Override
     public ResponseEntity<StudentDTO> getStudentById(Long id) {
-        Student student=studentRepository.findById(id).get();
-        if(student==null){
-            throw new NullPointerException("Not found student by id="+id);
-        }
-        StudentDTO studentDTO;
+        Student student=studentRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found student by id="+id));
+
         try{
-            studentDTO=studentMapper.studentToStudentDTO(student);
+            StudentDTO studentDTO=studentMapper.studentToStudentDTO(student);
             log.info("Successfully retrieved{}",studentDTO);
             return new ResponseEntity<>(studentDTO,HttpStatus.OK);
         }catch (Exception e){
@@ -133,10 +127,8 @@ public class StudentServiceImpl implements StudentServiceInter {
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-        Student student=studentRepository.findById(id).get();
-        if(student==null){
-            throw new NullPointerException("Not found student by id="+id);
-        }
+        Student student=studentRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Not found student by id="+id));
 
         try{
             studentRepository.deleteById(id);
