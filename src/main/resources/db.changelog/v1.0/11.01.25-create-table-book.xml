@@ -15,6 +15,7 @@
             <column name="image" type="varchar(250)"></column>
             <column name="stock_count" type="bigint"></column>
             <column name="category_id" type="bigint"></column>
+            <column name="order_id" type="bigint"></column>
         </createTable>
         <addAutoIncrement tableName="book" columnName="id" columnDataType="bigint" startWith="1"/>
     </changeSet>

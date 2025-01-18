@@ -1,6 +1,6 @@
 package com.company.librarymanagementsystem.security;
 
-import com.example.springbootstudent.service.CustomUserDetailsService;
+import com.company.librarymanagementsystem.service.impl.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

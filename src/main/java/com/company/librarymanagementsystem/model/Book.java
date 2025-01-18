@@ -42,4 +42,8 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
     private List<Student> students;
+
+    @ManyToOne()
+    @JoinColumn(name = "order_item_id")
+    private Order order;
 }
