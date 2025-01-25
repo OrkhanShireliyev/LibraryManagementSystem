@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <property name="LOG_FILE" value="C:/ATL Course/LibraryManagementSystem/librarymanagementsystem.log" />
+    <property name="LOG_FILE" value="C:/ATL Course/LibraryManagementSystemLogs/librarymanagementsystem.log" />
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
     <property name="FILE_LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [${springAppName},%X{traceId:-},%X{spanId:-},%X{X-Span-Export:-}] [%thread] %-5level %logger{35} - %msg%n"/>

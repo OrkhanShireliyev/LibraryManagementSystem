@@ -38,4 +38,6 @@ out/
 
 # Ignore original configuration file
 src/main/resources/application.properties
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
 
