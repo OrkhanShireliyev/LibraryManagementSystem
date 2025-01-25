@@ -5,7 +5,7 @@ import com.company.librarymanagementsystem.model.Book;
 import com.company.librarymanagementsystem.request.BookRequest;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BookMapper {
 
     Book bookRequestToBook(BookRequest BookRequest);

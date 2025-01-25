@@ -12,6 +12,6 @@
             <column name="name" type="varchar(10)"></column>
             <column name="surname" type="varchar(50)"></column>
         </createTable>
-        <addAutoIncrement tableName="author" columnName="id" columnDataType="bigint" startWith="1" />
+<!--        <addAutoIncrement tableName="author" columnName="id" columnDataType="bigint" />-->
     </changeSet>
 </databaseChangeLog>

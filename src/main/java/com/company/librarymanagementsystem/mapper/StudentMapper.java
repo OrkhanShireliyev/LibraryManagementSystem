@@ -5,7 +5,7 @@ import com.company.librarymanagementsystem.model.Student;
 import com.company.librarymanagementsystem.request.StudentRequest;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface StudentMapper {
 
     Student studentRequestToStudent(StudentRequest studentRequest);

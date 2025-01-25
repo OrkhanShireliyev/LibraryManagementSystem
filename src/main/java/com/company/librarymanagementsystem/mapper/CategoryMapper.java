@@ -5,7 +5,7 @@ import com.company.librarymanagementsystem.model.Category;
 import com.company.librarymanagementsystem.request.CategoryRequest;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
     Category categoryRequestToCategory(CategoryRequest categoryRequest);

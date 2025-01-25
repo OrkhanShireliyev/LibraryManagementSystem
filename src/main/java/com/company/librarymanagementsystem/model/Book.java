@@ -44,6 +44,6 @@ public class Book {
     private List<Student> students;
 
     @ManyToOne()
-    @JoinColumn(name = "order_item_id")
+    @JoinColumn(name = "orders_id")
     private Order order;
 }

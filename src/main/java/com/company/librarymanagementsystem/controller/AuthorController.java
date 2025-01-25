@@ -9,7 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/author")
@@ -18,9 +21,18 @@ public class AuthorController {
 
     private final AuthorServiceInter authorServiceInter;
 
-    @PostMapping("/save")
-    String save(@ModelAttribute AuthorRequest authorRequest){
-        authorServiceInter.save(authorRequest);
+    @GetMapping("/viewAuthor")
+    public String getAuthorsPage() {
+        return "author";
+    }
+
+    @PostMapping("/save/{bookId}")
+    String save(@ModelAttribute AuthorRequest authorRequest,@PathVariable String bookId,Model model){
+        List<Long> bookListId=Arrays.stream(bookId.split("/"))
+                        .map(Long::parseLong)
+                                .collect(Collectors.toList());
+        AuthorRequest author=authorServiceInter.save(authorRequest,bookListId).getBody();
+        model.addAttribute("author",author);
         return "save";
     }
 
@@ -28,17 +40,22 @@ public class AuthorController {
     String update(@PathVariable Long id,
                   @PathVariable String name,
                   @PathVariable String surname,
-                  @PathVariable List<Long> bookId,
+                  @PathVariable String bookId,
                   Model model){
-        Author authorUpdate= authorServiceInter.update(id,name,surname,bookId).getBody();
+
+        List<Long> bookListId= Arrays.stream(bookId.split("/"))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        Author authorUpdate= authorServiceInter.update(id,name,surname,bookListId).getBody();
         model.addAttribute("authorUpdate",authorUpdate);
         return "update";
     }
 
     @GetMapping("/authors")
     String getAllAuthors(Model model){
-        List<AuthorDTO> authorDTOS=authorServiceInter.getAllAuthors().getBody();
-        model.addAttribute("authorDTOS",authorDTOS);
+        List<AuthorDTO> authors=authorServiceInter.getAllAuthors().getBody();
+        model.addAttribute("authors",authors);
         return "authors";
     }
 

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +25,27 @@ import java.util.NoSuchElementException;
 public class AuthorServiceImpl implements AuthorServiceInter {
 
     private final AuthorRepository authorRepository;
+
     private final AuthorMapper authorMapper;
 
     private final BookRepository bookRepository;
 
     @Override
-    public ResponseEntity<AuthorRequest> save(AuthorRequest authorRequest) {
+    public ResponseEntity<AuthorRequest> save(AuthorRequest authorRequest,List<Long> bookId) {
         try {
-            Author author = authorMapper.authorRequestToAuthor(authorRequest);
+            Author author=new Author();
+//             author = authorMapper.authorRequestToAuthor(authorRequest);
+            author.setName(authorRequest.getName());
+            author.setSurname(authorRequest.getSurname());
+            List<Book> books=new ArrayList<>();
+            for (Long bookById:bookId){
+                Book findBookById=bookRepository.findById(bookById)
+                        .orElseThrow(()->new NoSuchElementException("Not found book by id="+bookById));
+                books.add(findBookById);
+                author.setBooks(books);
+            }
             authorRepository.save(author);
-            log.info("Successfully created{}",author);
+            log.info("Successfully created {}",author);
             return new ResponseEntity<>(authorRequest, HttpStatus.OK);
         }catch (Exception e){
             log.error("Error occurred when creating authors!");

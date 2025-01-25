@@ -73,12 +73,12 @@ public class SecurityConfig {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(auth->auth
-//                                .requestMatchers("/**").permitAll()
-                        .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/login", "/register").permitAll()
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
 //                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 //                        .requestMatchers("/content/**").hasAuthority("VISITOR")
-                        .anyRequest().authenticated()
+//                        .anyRequest().authenticated()
                 )
                 .sessionManagement(managment->managment
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

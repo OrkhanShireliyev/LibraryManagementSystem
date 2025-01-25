@@ -4,15 +4,15 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet id="2" author="Orkhan Shireliyev">
-        <createTable tableName="order_item">
+    <changeSet id="4" author="Orkhan Shireliyev">
+        <createTable tableName="orders">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="orders_id_pk" />
             </column>
-            <column name="order_time" type="bigint"></column>
+            <column name="order_number" type="bigint"></column>
             <column name="order_time" type="timestamp"></column>
             <column name="student_id" type="bigint"></column>
         </createTable>
-        <addAutoIncrement tableName="order_item" columnName="id" columnDataType="bigint" startWith="1"/>
+<!--        <addAutoIncrement tableName="orders" columnName="id" columnDataType="bigint" startWith="1"/>-->
     </changeSet>
 </databaseChangeLog>

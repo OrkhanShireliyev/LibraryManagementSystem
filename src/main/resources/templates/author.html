@@ -127,7 +127,7 @@
       <table class="table table-striped table-hover">
         <thead>
         <tr>
-          <th>ID</th>
+          <th>Number</th>
           <th>Ad</th>
           <th>Soyad</th>
           <th>Kitablar</th>
@@ -135,31 +135,11 @@
         </tr>
         </thead>
         <tbody id="authorList">
-        <tr>
-          <td>1</td>
-          <td class="author-name">Yazıcı 1</td>
-          <td class="author-surname">Soyad 1</td>
-          <td class="author-books">Kitab 1, Kitab 2</td>
-          <td class="action-btns">
-            <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('edit', 1)"><i class="fas fa-edit"></i> Redaktə et</a>
-            <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('delete', 1)"><i class="fas fa-trash-alt"></i> Sil</a>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td class="author-name">Yazıcı 2</td>
-          <td class="author-surname">Soyad 2</td>
-          <td class="author-books">Kitab 3</td>
-          <td class="action-btns">
-            <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('edit', 2)"><i class="fas fa-edit"></i> Redaktə et</a>
-            <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('delete', 2)"><i class="fas fa-trash-alt"></i> Sil</a>
-          </td>
-        </tr>
         </tbody>
       </table>
     </div>
     <div class="card-footer">
-      <p class="mb-0" id="totalAuthors">Toplam 2 yazıcı mövcuddur</p>
+      <p class="mb-0" id="totalAuthors">Toplam 0 yazıcı mövcuddur</p>
     </div>
   </div>
 </div>
@@ -173,7 +153,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <!-- Form burada yerləşdirilir -->
         <form id="authorForm">
+          <input type="hidden" id="authorId">
           <div class="mb-3">
             <label for="authorName" class="form-label">Ad</label>
             <input type="text" class="form-control" id="authorName" required>
@@ -185,9 +167,7 @@
           <div class="mb-3">
             <label for="authorBooks" class="form-label">Kitablar</label>
             <select multiple class="form-control" id="authorBooks">
-              <option value="1">Kitab 1</option>
-              <option value="2">Kitab 2</option>
-              <option value="3">Kitab 3</option>
+
             </select>
           </div>
           <div class="mb-3" id="deleteWarning" style="display: none;">
@@ -203,13 +183,79 @@
   </div>
 </div>
 
+
 <!-- Bootstrap və FontAwesome scriptləri -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    fetchAuthors();
+  });
+
+  function fetchAuthors() {
+    fetch('/author/authors') // Backend API endpoint-ini çağırırıq
+            .then(response => response.json()) // JSON formatında cavab alırıq
+            .then(authors => {
+              const authorList = document.getElementById('authorList');
+              authorList.innerHTML = ''; // Mövcud cədvəli təmizləyirik
+
+              authors.forEach(author => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td class="author-index">1</td>
+                    <td class="author-name">${author.name}</td>
+                    <td class="author-surname">${author.surname}</td>
+                    <td class="author-books">${author.books.join(', ')}</td>
+                    <td class="action-btns">
+                        <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('edit', ${author.id})"><i class="fas fa-edit"></i> Redaktə et</a>
+                        <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('delete', ${author.id})"><i class="fas fa-trash-alt"></i> Sil</a>
+                    </td>
+                `;
+
+                authorList.appendChild(row);
+              });
+            })
+            .catch(error => {
+              console.error('Xəta baş verdi:', error);
+            });
+  }
+
+  function loadBooks() {
+    fetch('/book/books') // Backend-dən kitabları gətirən API
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Kitabları yükləmək mümkün olmadı');
+              }
+              return response.json();
+            })
+            .then(books => {
+              const bookSelect = document.getElementById('authorBooks');
+              bookSelect.innerHTML = ''; // Mövcud seçimləri təmizləyirik
+
+              // Hər bir kitab üçün seçim əlavə edirik
+              books.forEach(book => {
+                const option = document.createElement('option');
+                option.value = book.id; // Kitabın ID-si
+                option.textContent = book.name; // Kitabın adı
+                bookSelect.appendChild(option);
+              });
+            })
+            .catch(error => {
+              console.error('Xəta:', error);
+            });
+  }
+
+  document.getElementById('authorModal').addEventListener('show.bs.modal', function () {
+    loadBooks();
+  });
+
+
   document.getElementById('searchInput').addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
     const rows = document.querySelectorAll('#authorList tr');
     let totalAuthors = 0;
+    let rowIndex = 1;  // Sıra nömrəsi üçün sayğac
 
     rows.forEach(row => {
       const nameCell = row.querySelector('.author-name');
@@ -221,20 +267,23 @@
       const booksText = booksCell.textContent.toLowerCase();
 
       if (nameText.includes(searchTerm) || surnameText.includes(searchTerm) || booksText.includes(searchTerm)) {
-        row.style.display = '';
-        totalAuthors++;
-
+        row.style.display = '';  // Nəticəni göstər
+        totalAuthors++;  // Tapılan yazıcı sayını artır
         highlightText(nameCell, searchTerm);
         highlightText(surnameCell, searchTerm);
         highlightText(booksCell, searchTerm);
+
+        // Sıra nömrəsini əlavə edirik
+        row.querySelector('.author-index').textContent = rowIndex++;  // Sıra nömrəsini göstər
       } else {
-        row.style.display = 'none';
+        row.style.display = 'none';  // Nəticəni gizlət
         removeHighlight(nameCell);
         removeHighlight(surnameCell);
         removeHighlight(booksCell);
       }
     });
 
+    // Axtarış nəticəsinə uyğun ümumi sayını yeniləyirik
     document.getElementById('totalAuthors').textContent = `Toplam ${totalAuthors} yazıcı mövcuddur`;
   });
 
@@ -249,25 +298,122 @@
     element.innerHTML = element.textContent;
   }
 
-  function openModal(action, authorId) {
-    const modalTitle = document.getElementById('authorModalLabel');
-    const modalActionBtn = document.getElementById('modalActionBtn');
-    const deleteWarning = document.getElementById('deleteWarning');
 
-    if (action === 'create') {
-      modalTitle.textContent = 'Yeni Yazıcı Yarat';
-      modalActionBtn.textContent = 'Yarat';
-      deleteWarning.style.display = 'none';
-    } else if (action === 'edit') {
-      modalTitle.textContent = 'Yazıcıyı Redaktə Et';
-      modalActionBtn.textContent = 'Redaktə et';
-      deleteWarning.style.display = 'none';
-    } else if (action === 'delete') {
-      modalTitle.textContent = 'Yazıcıyı Sil';
-      modalActionBtn.textContent = 'Sil';
-      deleteWarning.style.display = 'block';
+  // Modal düyməsinə kliklədikdə müvafiq əməliyyatı yerinə yetirmək
+    document.getElementById('modalActionBtn').addEventListener('click', function() {
+        const action = this.textContent.toLowerCase(); // Düymənin məzmununa görə əməliyyat müəyyənləşdirilir
+        const authorId = document.getElementById('authorId') ? document.getElementById('authorId').value : null; // Seçili yazıcı ID-si
+
+        if (action === 'yarat') {
+            createAuthor();
+        } else if (action === 'redaktə et') {
+            editAuthor(authorId);
+        } else if (action === 'sil') {
+            deleteAuthor(authorId);
+        }
+    });
+
+    // Yeni yazıcı yaratmaq
+    function createAuthor() {
+        const name = document.getElementById('authorName').value;
+        const surname = document.getElementById('authorSurname').value;
+        const books = Array.from(document.getElementById('authorBooks').selectedOptions).map(option => option.value);
+
+        const bookId=books.join("/");
+
+        // Backend-ə POST request göndəririk
+        fetch(`/author/save/${bookId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Yeni Yazıcı yaradıldı:', data);
+                $('#authorModal').modal('hide');
+                alert('Yeni yazıcı yaradıldı!');
+                location.reload(); // Sayfanı yenilə
+            })
+            .catch(error => {
+                console.error('Xəta baş verdi:', error);
+            });
     }
-  }
+
+    // Yazıcıyı redaktə etmək
+    function editAuthor(authorId) {
+        const name = document.getElementById('authorName').value;
+        const surname = document.getElementById('authorSurname').value;
+        const books = Array.from(document.getElementById('authorBooks').selectedOptions).map(option => option.value);
+
+        const bookId=books.join("/");
+
+        // Backend-ə PUT request göndəririk
+        fetch(`/author/update/${authorId}/${name}/${surname}/${bookId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+        })
+                .then(response => response.json())
+                .then(data => {
+                  console.log('Yazıcı redaktə olundu:', data);
+                  $('#authorModal').modal('hide');
+                  alert('Yazıcı redaktə olundu!');
+                  location.reload(); // Sayfanı yenilə
+                })
+                .catch(error => {
+                  console.error('Xəta baş verdi:', error);
+                });
+    }
+
+    // Yazıcıyı silmək
+    function deleteAuthor(authorId) {
+        // Backend-ə DELETE request göndəririk
+        fetch(`/author/delete/${authorId}`, {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Yazıcı silindi:', data);
+                $('#authorModal').modal('hide');
+                alert('Yazıcı silindi!');
+                location.reload(); // Sayfanı yenilə
+            })
+            .catch(error => {
+                console.error('Xəta baş verdi:', error);
+            });
+    }
+
+    // Modalın əməliyyatını təyin etmək
+    function openModal(action, authorId) {
+        const modalTitle = document.getElementById('authorModalLabel');
+        const modalActionBtn = document.getElementById('modalActionBtn');
+        const deleteWarning = document.getElementById('deleteWarning');
+
+        // Modal formunu sıfırlamaq
+        document.getElementById('authorForm').reset();
+
+        if (action === 'create') {
+            modalTitle.textContent = 'Yeni Yazıcı Yarat';
+            modalActionBtn.textContent = 'Yarat';
+            deleteWarning.style.display = 'none';
+        } else if (action === 'edit') {
+            modalTitle.textContent = 'Yazıcıyı Redaktə Et';
+            modalActionBtn.textContent = 'Redaktə et';
+            deleteWarning.style.display = 'none';
+
+            // Yazıcı ID-sini formda göstərmək
+            document.getElementById('authorId').value = authorId;
+        } else if (action === 'delete') {
+            modalTitle.textContent = 'Yazıcıyı Sil';
+            modalActionBtn.textContent = 'Sil';
+            deleteWarning.style.display = 'block';
+
+            // Yazıcı ID-sini formda göstərmək
+            document.getElementById('authorId').value = authorId;
+        }
+    }
 </script>
 </body>
 </html>

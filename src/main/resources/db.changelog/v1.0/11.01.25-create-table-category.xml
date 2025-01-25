@@ -11,6 +11,6 @@
             </column>
             <column name="name" type="varchar(50)"></column>
         </createTable>
-        <addAutoIncrement tableName="category" columnName="id" columnDataType="bigint" startWith="1"/>
+<!--        <addAutoIncrement tableName="category" columnName="id" columnDataType="bigint" startWith="1"/>-->
     </changeSet>
 </databaseChangeLog>

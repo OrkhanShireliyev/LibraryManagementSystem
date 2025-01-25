@@ -17,6 +17,6 @@
             <column name="category_id" type="bigint"></column>
             <column name="order_id" type="bigint"></column>
         </createTable>
-        <addAutoIncrement tableName="book" columnName="id" columnDataType="bigint" startWith="1"/>
+<!--        <addAutoIncrement tableName="book" columnName="id" columnDataType="bigint" startWith="1"/>-->
     </changeSet>
 </databaseChangeLog>

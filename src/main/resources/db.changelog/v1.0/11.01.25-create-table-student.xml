@@ -14,6 +14,6 @@
             <column name="surname" type="varchar(50)"></column>
             <column name="age" type="bigint"></column>
         </createTable>
-        <addAutoIncrement tableName="student" columnName="id" columnDataType="bigint" startWith="1"/>
+<!--        <addAutoIncrement tableName="student" columnName="id" columnDataType="bigint" startWith="1"/>-->
     </changeSet>
 </databaseChangeLog>
