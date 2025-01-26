@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class AuthorDTO {
+    private Long id;
     private String name;
     private String surname;
     private List<Book> books;

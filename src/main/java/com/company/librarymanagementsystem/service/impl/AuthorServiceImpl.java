@@ -37,14 +37,18 @@ public class AuthorServiceImpl implements AuthorServiceInter {
 //             author = authorMapper.authorRequestToAuthor(authorRequest);
             author.setName(authorRequest.getName());
             author.setSurname(authorRequest.getSurname());
-            List<Book> books=new ArrayList<>();
-            for (Long bookById:bookId){
-                Book findBookById=bookRepository.findById(bookById)
-                        .orElseThrow(()->new NoSuchElementException("Not found book by id="+bookById));
-                books.add(findBookById);
-                author.setBooks(books);
+//            List<Book> books=bookRepository.findAllById(bookId);
+//            if (books.size() != bookId.size()) {
+//                throw new NoSuchElementException("Some books were not found by the provided IDs");
+//            }
+            List<Book> books = new ArrayList<>();
+            for (Long bookIds : bookId) {
+                Book book = bookRepository.findById(bookIds)
+                        .orElseThrow(() -> new NoSuchElementException("Not found book by id=" + bookId));
+                books.add(book);
             }
-            authorRepository.save(author);
+            author.setBooks(books);
+            authorRepository.saveAndFlush(author);
             log.info("Successfully created {}",author);
             return new ResponseEntity<>(authorRequest, HttpStatus.OK);
         }catch (Exception e){
@@ -69,8 +73,11 @@ public class AuthorServiceImpl implements AuthorServiceInter {
             author.setName(name);
             author.setSurname(surname);
             author.setBooks(books);
+            log.info(author.getBooks().toString());
             authorRepository.save(author);
-            log.info("Successfully updated{}",author);
+            log.info("Successfully updated {}",author);
+            Author author1=authorRepository.findById(id).get();
+            System.out.println("yenil'ndi="+author1);
             return new ResponseEntity<>(author, HttpStatus.OK);
         }catch (Exception e){
             log.error("Error occurred when updating author!");
@@ -81,6 +88,7 @@ public class AuthorServiceImpl implements AuthorServiceInter {
     @Override
     public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
         List<Author> authors=authorRepository.findAll();
+        authors.stream().forEach(System.out::println);
         if (authors.isEmpty()){
             throw new NoSuchElementException("Not found authors!");
         }
@@ -118,6 +126,7 @@ public class AuthorServiceImpl implements AuthorServiceInter {
     public void delete(Long id) {
         Author author=authorRepository.findById(id)
                 .orElseThrow(()->new NoSuchElementException("Not found author by id="+id));
+        System.out.println(author);
         try{
             authorRepository.deleteById(id);
             log.info("Successfully deleted{}",author);

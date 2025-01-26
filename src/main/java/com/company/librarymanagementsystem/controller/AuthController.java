@@ -20,36 +20,36 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthenticationManager authenticationManager;
-
-  private final CustomUserDetailsService userDetailsService;
-
-  private final AuthServiceInter authServiceInter;
-
-  private final JwtTokenProvider jwtTokenProvider;
-
-  @Value("${jwtSecret}")
-  String jwtSecret;
-
-  @PostMapping("/login")
-  public String login(@ModelAttribute LoginDto loginRequest) {
-    Authentication authentication =
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(),
-                            loginRequest.getPassword()
-                    )
-            );
-
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-    jwtTokenProvider.generateToken(authentication);
-    return "login";
-
-  }
-
-  @PostMapping("/register")
-  public String register(@ModelAttribute RegisterDto registerDto) {
-    authServiceInter.register(registerDto);
-    return "register";
-  }
+//  private final AuthenticationManager authenticationManager;
+//
+//  private final CustomUserDetailsService userDetailsService;
+//
+//  private final AuthServiceInter authServiceInter;
+//
+//  private final JwtTokenProvider jwtTokenProvider;
+//
+//  @Value("${jwtSecret}")
+//  String jwtSecret;
+//
+//  @PostMapping("/login")
+//  public String login(@ModelAttribute LoginDto loginRequest) {
+//    Authentication authentication =
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            loginRequest.getUsername(),
+//                            loginRequest.getPassword()
+//                    )
+//            );
+//
+//    SecurityContextHolder.getContext().setAuthentication(authentication);
+//    jwtTokenProvider.generateToken(authentication);
+//    return "login";
+//
+//  }
+//
+//  @PostMapping("/register")
+//  public String register(@ModelAttribute RegisterDto registerDto) {
+//    authServiceInter.register(registerDto);
+//    return "register";
+//  }
 }

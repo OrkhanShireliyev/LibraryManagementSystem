@@ -1,11 +1,10 @@
 package com.company.librarymanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,13 +22,14 @@ public class Book {
     private String image;
     private Long stockCount;
 
-    @ManyToMany
-    @JoinTable(
-            name = "book_author",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id")
-    )
-    private List<Author> authors;
+    @ManyToMany(mappedBy = "books")
+//    @JoinTable(
+//            name = "book_author",
+//            joinColumns = @JoinColumn(name = "book_id"),
+//            inverseJoinColumns = @JoinColumn(name = "author_id")
+//    )
+    @JsonIgnore
+    private List<Author> authors=new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -46,4 +46,14 @@ public class Book {
     @ManyToOne()
     @JoinColumn(name = "orders_id")
     private Order order;
+
+    @Override
+    public String toString() {
+        return "Book{name='" + name
+                + "', isbn='" + isbn
+                + "', publishedYear='" + publishedYear
+                + "', image='"+image
+                + "', stockCount'"+stockCount
+                + "}";
+    }
 }

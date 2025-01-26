@@ -5,6 +5,7 @@ import com.company.librarymanagementsystem.model.Author;
 import com.company.librarymanagementsystem.request.AuthorRequest;
 import com.company.librarymanagementsystem.service.inter.AuthorServiceInter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +22,19 @@ public class AuthorController {
 
     private final AuthorServiceInter authorServiceInter;
 
-    @GetMapping("/viewAuthor")
+    @GetMapping("/")
     public String getAuthorsPage() {
         return "author";
     }
 
     @PostMapping("/save/{bookId}")
-    String save(@ModelAttribute AuthorRequest authorRequest,@PathVariable String bookId,Model model){
-        List<Long> bookListId=Arrays.stream(bookId.split("/"))
+    ResponseEntity<AuthorRequest> save(@RequestBody AuthorRequest authorRequest, @PathVariable String bookId, Model model){
+        List<Long> bookListId=Arrays.stream(bookId.split(","))
                         .map(Long::parseLong)
                                 .collect(Collectors.toList());
         AuthorRequest author=authorServiceInter.save(authorRequest,bookListId).getBody();
         model.addAttribute("author",author);
-        return "save";
+        return ResponseEntity.ok(author);
     }
 
     @PostMapping("/update/{id}/{name}/{surname}/{bookId}")
@@ -43,33 +44,34 @@ public class AuthorController {
                   @PathVariable String bookId,
                   Model model){
 
-        List<Long> bookListId= Arrays.stream(bookId.split("/"))
+        List<Long> bookListId= Arrays.stream(bookId.split(","))
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
 
         Author authorUpdate= authorServiceInter.update(id,name,surname,bookListId).getBody();
         model.addAttribute("authorUpdate",authorUpdate);
-        return "update";
+        return "author";
     }
 
     @GetMapping("/authors")
-    String getAllAuthors(Model model){
+    @ResponseBody
+    List<AuthorDTO> getAllAuthors(){
         List<AuthorDTO> authors=authorServiceInter.getAllAuthors().getBody();
-        model.addAttribute("authors",authors);
-        return "authors";
+        return authors;
     }
 
     @GetMapping("/getById/{id}")
     String getAuthorById(@PathVariable Long id,Model model){
         AuthorDTO authorDTO=authorServiceInter.getAuthorById(id).getBody();
         model.addAttribute("authorDTO",authorDTO);
-        return "getById";
+        return "author";
     }
 
     @PostMapping("/delete/{id}")
     String delete(@PathVariable Long id,Model model){
         authorServiceInter.delete(id);
         model.addAttribute("successMessage", "Author successfully deleted!");
-        return "delete";
+        model.addAttribute("authors", authorServiceInter.getAllAuthors());
+        return "author";
     }
 }

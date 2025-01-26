@@ -19,8 +19,8 @@ public class OrderController {
 
     private final OrderServiceInter orderServiceInter;
 
-    @GetMapping("/viewOrder")
-    String viewOrder(){
+    @GetMapping("/")
+    String viewOrderPage(){
         return "order";
     }
 
@@ -28,7 +28,7 @@ public class OrderController {
     String save(@ModelAttribute OrderRequest orderRequest, @PathVariable List<Long> bookIds, @PathVariable Long studentId, Model model){
         OrderRequest order=orderServiceInter.save(orderRequest,bookIds,studentId).getBody();
         model.addAttribute("order",order);
-        return "create";
+        return "order";
     }
 
     @PostMapping("/edit/{id}/{orderNumber}/{localDate}/{bookIds}/{studentId}")
@@ -40,27 +40,27 @@ public class OrderController {
                   Model model){
         Order orderUpdate=orderServiceInter.update(id, orderNumber, localDate, bookIds, studentId).getBody();
         model.addAttribute("orderUpdate",orderUpdate);
-        return "edit";
+        return "order";
     }
 
     @GetMapping("/orders")
     String getAllOrders(Model model){
         List<OrderDTO> orders=orderServiceInter.getAllOrders().getBody();
         model.addAttribute("orders",orders);
-        return "orders";
+        return "order";
     }
 
     @GetMapping("/getByOrderNumber/{orderNumber}")
     String getOrderByOrderNumber(@PathVariable Long orderNumber,Model model){
         OrderDTO orderDTO=orderServiceInter.getOrderByOrderNumber(orderNumber).getBody();
         model.addAttribute("orderDTO",orderDTO);
-        return "getByOrderNumber";
+        return "order";
     }
 
     @PostMapping("/delete/{orderNumber}")
     String delete(@PathVariable Long orderNumber,Model model){
         orderServiceInter.delete(orderNumber);
         model.addAttribute("successMessage", "Author successfully deleted!");
-        return "delete";
+        return "order";
     }
 }

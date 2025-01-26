@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class BookDTO {
+    private Long id;
     private String name;
     private String isbn;
     private String publishedYear;

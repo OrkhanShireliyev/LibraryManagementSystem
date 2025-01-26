@@ -112,12 +112,13 @@
 <div class="container mt-5">
   <div class="card">
     <div class="card-header">
-      Yazıçılar Siyahısı
+      Yazıçılar siyahısı
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <a href="javascript:void(0);" class="btn btn-custom mb-3" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('create')"><i class="fas fa-plus"></i> Yeni Yazıcı Yarat</a>
+          <a href="javascript:void(0);" class="btn btn-custom mb-3" data-bs-toggle="modal" data-bs-target="#authorModal"
+             onclick="openModal('create')"><i class="fas fa-plus"></i> Yeni yazıçı yarat</a>
         </div>
         <div class="col-md-6 text-end">
           <input type="text" class="form-control search-bar" id="searchInput" placeholder="Axtarış edin..." aria-label="Search">
@@ -135,11 +136,12 @@
         </tr>
         </thead>
         <tbody id="authorList">
+
         </tbody>
       </table>
     </div>
     <div class="card-footer">
-      <p class="mb-0" id="totalAuthors">Toplam 0 yazıcı mövcuddur</p>
+      <p class="mb-0" id="totalAuthors"></p>
     </div>
   </div>
 </div>
@@ -155,29 +157,29 @@
       <div class="modal-body">
         <!-- Form burada yerləşdirilir -->
         <form id="authorForm">
-          <input type="hidden" id="authorId">
+          <input type="hidden" id="authorId" name="authorId">
           <div class="mb-3">
             <label for="authorName" class="form-label">Ad</label>
-            <input type="text" class="form-control" id="authorName" required>
+            <input type="text" class="form-control" id="authorName" placeholder="Adı daxil edin.." required>
           </div>
           <div class="mb-3">
             <label for="authorSurname" class="form-label">Soyad</label>
-            <input type="text" class="form-control" id="authorSurname" required>
+            <input type="text" class="form-control" id="authorSurname" placeholder="Soyadı daxil edin.." required>
           </div>
           <div class="mb-3">
-            <label for="authorBooks" class="form-label">Kitablar</label>
-            <select multiple class="form-control" id="authorBooks">
+            <label for="authorBooks" class="form-label" >Kitablar</label>
+            <select multiple class="form-control" id="authorBooks" placeholder="Kitab seçin.." >
 
             </select>
           </div>
-          <div class="mb-3" id="deleteWarning" style="display: none;">
-            <p>Bu yazıcıyı silmək istədiyinizə əminsiniz?</p>
+          <div class="mb-3" id="deleteWarning" style="display: none; color: navy;">
+            <p>Bu yazıçını silmək istədiyinizə əminsiniz?</p>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bağla</button>
-        <button type="button" class="btn btn-danger" id="modalActionBtn">Əməliyyatı İcra Et</button>
+        <button type="button" class="btn btn-danger" id="modalActionBtn" >Əməliyyatı İcra Et</button>
       </div>
     </div>
   </div>
@@ -186,6 +188,8 @@
 
 <!-- Bootstrap və FontAwesome scriptləri -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -196,25 +200,34 @@
     fetch('/author/authors') // Backend API endpoint-ini çağırırıq
             .then(response => response.json()) // JSON formatında cavab alırıq
             .then(authors => {
+              console.log(authors);
               const authorList = document.getElementById('authorList');
               authorList.innerHTML = ''; // Mövcud cədvəli təmizləyirik
 
-              authors.forEach(author => {
+              authors.forEach((author, index) => {
                 const row = document.createElement('tr');
 
                 row.innerHTML = `
-                    <td class="author-index">1</td>
+                    <td style="display: none;">${author.id}</td>
+                    <td class="author-index">${index+1}</td>
                     <td class="author-name">${author.name}</td>
                     <td class="author-surname">${author.surname}</td>
-                    <td class="author-books">${author.books.join(', ')}</td>
+                    <td class="author-books">
+                        ${author.books && author.books.length > 0
+                        ? author.books.map(book => book.name).join(', ')
+                        : 'Kitab yoxdur'}
+                    </td>
                     <td class="action-btns">
-                        <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('edit', ${author.id})"><i class="fas fa-edit"></i> Redaktə et</a>
-                        <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#authorModal" onclick="openModal('delete', ${author.id})"><i class="fas fa-trash-alt"></i> Sil</a>
+                        <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#authorModal" onclick="openModal('edit', ${author.id})"><i class="fas fa-edit"></i> Redaktə et</a>
+                        <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal"
+                         data-bs-target="#authorModal" onclick="openModal('delete', ${author.id})"><i class="fas fa-trash-alt"></i> Sil</a>
                     </td>
                 `;
 
                 authorList.appendChild(row);
               });
+              totalAuthors.textContent = `Toplam ${authors.length} yazıçı mövcuddur`;
             })
             .catch(error => {
               console.error('Xəta baş verdi:', error);
@@ -222,11 +235,12 @@
   }
 
   function loadBooks() {
-    fetch('/book/books') // Backend-dən kitabları gətirən API
+    fetch('/book/books')
             .then(response => {
               if (!response.ok) {
                 throw new Error('Kitabları yükləmək mümkün olmadı');
               }
+
               return response.json();
             })
             .then(books => {
@@ -246,9 +260,9 @@
             });
   }
 
-  document.getElementById('authorModal').addEventListener('show.bs.modal', function () {
-    loadBooks();
-  });
+  document.getElementById('authorModal').addEventListener(
+          'show.bs.modal', function () {loadBooks();}
+  );
 
 
   document.getElementById('searchInput').addEventListener('input', function() {
@@ -304,35 +318,41 @@
         const action = this.textContent.toLowerCase(); // Düymənin məzmununa görə əməliyyat müəyyənləşdirilir
         const authorId = document.getElementById('authorId') ? document.getElementById('authorId').value : null; // Seçili yazıcı ID-si
 
-        if (action === 'yarat') {
+        if (action === 'create') {
             createAuthor();
-        } else if (action === 'redaktə et') {
+        } else if (action === 'edit') {
             editAuthor(authorId);
-        } else if (action === 'sil') {
+        } else if (action === 'delete') {
             deleteAuthor(authorId);
         }
     });
 
     // Yeni yazıcı yaratmaq
     function createAuthor() {
+      console.log('create metoduna daxil oldu...');
         const name = document.getElementById('authorName').value;
         const surname = document.getElementById('authorSurname').value;
         const books = Array.from(document.getElementById('authorBooks').selectedOptions).map(option => option.value);
 
-        const bookId=books.join("/");
-
+        const bookId=books.join(",");
+      console.log('Backendə sorgu göndərilir...');
         // Backend-ə POST request göndəririk
         fetch(`/author/save/${bookId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            surname: surname,
+            books: books // Kitab ID-lərini göndəririk
+          })
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Yeni Yazıcı yaradıldı:', data);
+                console.log('Yeni yazıçı yaradıldı:', data);
                 $('#authorModal').modal('hide');
-                alert('Yeni yazıcı yaradıldı!');
+                alert('Yeni yazıçı yaradıldı!');
                 location.reload(); // Sayfanı yenilə
             })
             .catch(error => {
@@ -345,22 +365,24 @@
         const name = document.getElementById('authorName').value;
         const surname = document.getElementById('authorSurname').value;
         const books = Array.from(document.getElementById('authorBooks').selectedOptions).map(option => option.value);
-
-        const bookId=books.join("/");
+        console.log(books)
+        const bookId=books.join(",");
+        console.log(bookId)
 
         // Backend-ə PUT request göndəririk
         fetch(`/author/update/${authorId}/${name}/${surname}/${bookId}`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            }
         })
-                .then(response => response.json())
-                .then(data => {
-                  console.log('Yazıcı redaktə olundu:', data);
-                  $('#authorModal').modal('hide');
-                  alert('Yazıcı redaktə olundu!');
-                  location.reload(); // Sayfanı yenilə
+                .then(response =>{
+                  if(response.ok){
+                    console.log('Yazıçı redaktə olundu:');
+                    $('#authorModal').modal('hide');
+                    alert('Yazıçı redaktə olundu!');
+                    location.reload();
+                  }else {
+                    console.error('Yazıçı redaktə olunmadı!');
+                    alert('Xəta baş verdi! Yazıçı redaktə olunmadı!');
+                  }
                 })
                 .catch(error => {
                   console.error('Xəta baş verdi:', error);
@@ -373,12 +395,16 @@
         fetch(`/author/delete/${authorId}`, {
             method: 'POST',
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Yazıcı silindi:', data);
+            .then(response => {
+              if (response.ok){
+                console.log('Yazıçı silindi:');
                 $('#authorModal').modal('hide');
-                alert('Yazıcı silindi!');
-                location.reload(); // Sayfanı yenilə
+                alert('Yazıçı silindi!');
+                location.reload();
+              }else {
+                console.error('Yazıçını silmək mümkün olmadı!');
+                alert('Xəta baş verdi! Yazıçı silinmədi!');
+              }
             })
             .catch(error => {
                 console.error('Xəta baş verdi:', error);
@@ -387,6 +413,7 @@
 
     // Modalın əməliyyatını təyin etmək
     function openModal(action, authorId) {
+        console.log(`Action: ${action}, Author ID: ${authorId}`);
         const modalTitle = document.getElementById('authorModalLabel');
         const modalActionBtn = document.getElementById('modalActionBtn');
         const deleteWarning = document.getElementById('deleteWarning');
@@ -394,19 +421,37 @@
         // Modal formunu sıfırlamaq
         document.getElementById('authorForm').reset();
 
+      const newBtn = modalActionBtn.cloneNode(true);
+      modalActionBtn.parentNode.replaceChild(newBtn, modalActionBtn);
+
+      newBtn.addEventListener('click', () => {
         if (action === 'create') {
-            modalTitle.textContent = 'Yeni Yazıcı Yarat';
+          console.log('Yeni yazıçı yaradılır...');
+          // Yeni yazıçı yaratma əməliyyatı
+          createAuthor();
+        } else if (action === 'edit') {
+          console.log(`Yazıçı redaktə edilir: ID=${authorId}`);
+          // Redaktə əməliyyatı üçün lazımi kod
+          editAuthor(authorId)
+        } else if (action === 'delete') {
+          console.log(`Yazıçı silinir: ID=${authorId}`);
+          deleteAuthor(authorId); // Silmə funksiyasını çağırın
+        }
+      });
+
+        if (action === 'create') {
+            modalTitle.textContent = 'Yeni yazıçı yaratmaq';
             modalActionBtn.textContent = 'Yarat';
             deleteWarning.style.display = 'none';
         } else if (action === 'edit') {
-            modalTitle.textContent = 'Yazıcıyı Redaktə Et';
+            modalTitle.textContent = 'Yazıçını redaktə etmək';
             modalActionBtn.textContent = 'Redaktə et';
             deleteWarning.style.display = 'none';
 
             // Yazıcı ID-sini formda göstərmək
             document.getElementById('authorId').value = authorId;
         } else if (action === 'delete') {
-            modalTitle.textContent = 'Yazıcıyı Sil';
+            modalTitle.textContent = 'Yazıçını silmək';
             modalActionBtn.textContent = 'Sil';
             deleteWarning.style.display = 'block';
 

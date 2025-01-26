@@ -9,19 +9,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthServiceImpl implements AuthServiceInter {
-
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  @Override
-  public void register(RegisterDto registerDto) {
-    User user = new User();
-    user.setUsername(registerDto.getUsername());
-    user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-    userRepository.save(user);
-  }
+public class AuthServiceImpl  {
+//
+//  @Autowired
+//  private UserRepository userRepository;
+//
+//  @Autowired
+//  private PasswordEncoder passwordEncoder;
+//
+//  @Override
+//  public void register(RegisterDto registerDto) {
+//    User user = new User();
+//    user.setUsername(registerDto.getUsername());
+//    user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+//    userRepository.save(user);
+//  }
 }

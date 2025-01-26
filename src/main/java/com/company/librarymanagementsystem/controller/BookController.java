@@ -18,10 +18,15 @@ public class BookController {
 
     private final BookServiceInter bookServiceInter;
 
+    @GetMapping("/")
+    String getBooksPage(){
+        return "book";
+    }
+
     @PostMapping("/save")
     String save(@ModelAttribute BookRequest bookRequest){
         bookServiceInter.save(bookRequest);
-        return "save";
+        return "book";
     }
 
     @PostMapping("/update/{id}/{name}/{isbn}/{publishedYear}/{image}/{stockCount}/{authorId}/{categoryId}/{studentId}")
@@ -37,27 +42,27 @@ public class BookController {
                   Model model){
      Book book=bookServiceInter.update(id, name, isbn, publishedYear, image, stockCount, authorId, categoryId, studentId).getBody();
      model.addAttribute("update",book);
-     return "update";
+     return "book";
     }
 
     @GetMapping("/books")
-    String getAllBooks(Model model){
+    @ResponseBody
+    List<BookDTO> getAllBooks(){
         List<BookDTO> bookDTOS=bookServiceInter.getAllBooks().getBody();
-        model.addAttribute("books",bookDTOS);
-        return "books";
+        return bookDTOS;
     }
 
     @GetMapping("/getById/{id}")
     String getBookById(@PathVariable Long id,Model model){
         BookDTO bookDTO=bookServiceInter.getBookById(id).getBody();
         model.addAttribute("bookDTO",bookDTO);
-        return "getById";
+        return "book";
     }
 
     @PostMapping("/delete/{id}")
     String delete(@PathVariable Long id,Model model){
         bookServiceInter.delete(id);
         model.addAttribute("successMessage", "Student successfully deleted!");
-        return "delete";
+        return "book";
     }
 }

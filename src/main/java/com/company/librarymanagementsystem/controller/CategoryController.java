@@ -18,37 +18,41 @@ public class CategoryController {
 
     private final CategoryServiceInter categoryServiceInter;
 
+    @GetMapping("/")
+    String getCategoryPage(){
+        return "category";
+    }
     @PostMapping("/save")
     String save(@ModelAttribute CategoryRequest categoryRequest){
         categoryServiceInter.save(categoryRequest);
-        return "save";
+        return "category";
     }
 
     @PostMapping("/update/{id}/{name}/{bookId}")
     String update(@PathVariable Long id, @PathVariable String name,List<Long> bookId, Model model){
         Category categoryUpdate=categoryServiceInter.update(id,name,bookId).getBody();
         model.addAttribute("categoryUpdate",categoryUpdate);
-        return "update";
+        return "category";
     }
 
     @GetMapping("/categories")
     String getAllCategory(Model model){
         List<CategoryDTO> categoryDTOS=categoryServiceInter.getAllCategory().getBody();
         model.addAttribute("categoryDTOS",categoryDTOS);
-        return "categories";
+        return "category";
     }
 
    @GetMapping("/getById/{id}")
    String getCategoryById(@PathVariable Long id,Model model){
         CategoryDTO categoryDTO=categoryServiceInter.getCategoryById(id).getBody();
         model.addAttribute("categoryDTO",categoryDTO);
-        return "getById";
+        return "category";
    }
 
    @PostMapping("/delete/{id}")
    String delete(@PathVariable Long id,Model model){
        categoryServiceInter.delete(id);
        model.addAttribute("successMessage", "Category successfully deleted!");
-       return "delete";
+       return "category";
     }
 }

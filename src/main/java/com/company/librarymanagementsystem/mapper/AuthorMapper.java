@@ -11,4 +11,5 @@ public interface AuthorMapper {
 
     Author authorRequestToAuthor(AuthorRequest authorRequest);
     AuthorDTO authorToAuthorDTO(Author author);
+
 }
