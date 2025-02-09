@@ -4,16 +4,18 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet id="5" author="Orkhan Shireliyev">
+
+    <changeSet id="3" author="Orkhan Shireliyev">
         <createTable tableName="student">
             <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="student_id_pk" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="registry_code" type="varchar(20)"></column>
-            <column name="name" type="varchar(20)"></column>
-            <column name="surname" type="varchar(50)"></column>
-            <column name="age" type="bigint"></column>
+            <column name="registry_code" type="varchar(250)" />
+            <column name="name" type="varchar(250)" />
+            <column name="surname" type="varchar(250)" />
+            <column name="age" type="int" />
         </createTable>
-<!--        <addAutoIncrement tableName="student" columnName="id" columnDataType="bigint" startWith="1"/>-->
     </changeSet>
+
+
 </databaseChangeLog>

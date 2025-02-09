@@ -5,6 +5,22 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <includeAll path="db.changelog/v1.0"/>
+    <!-- 1. Əsas cədvəllər -->
+    <include file="db.changelog/v1.0/11.01.25-create-table-author.xml"/>
+    <include file="db.changelog/v1.0/11.01.25-create-table-book.xml"/>
+    <include file="db.changelog/v1.0/11.01.25-create-table-student.xml"/>
+    <include file="db.changelog/v1.0/11.01.25-create-table-orders.xml"/>
+    <include file="db.changelog/v1.0/11.01.25-create-table-category.xml"/>
+
+    <!-- Proyekti ilk dəfə run et və cədvəlləri yarat! -->
+
+    <!-- 2. Many-to-Many əlaqələr -->
+    <include file="db.changelog/v1.0/04-02-25-create-table-book-author.xml"/>
+    <include file="db.changelog/v1.0/04-02-25-create-table-book-student.xml"/>
+
+    <!-- Proyekti yenidən run et və Many-to-Many cədvəlləri yarat! -->
+
+    <!-- 3. Xarici açarlar (Foreign Keys) -->
+    <include file="db.changelog/v1.0/04-02-25-add-foreign-keys.xml"/>
 
 </databaseChangeLog>
