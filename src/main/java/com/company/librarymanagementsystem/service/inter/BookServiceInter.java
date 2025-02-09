@@ -10,23 +10,35 @@ import com.company.librarymanagementsystem.request.BookRequest;
 import com.company.librarymanagementsystem.request.StudentRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 public interface BookServiceInter {
 
-    ResponseEntity<BookRequest> save(BookRequest bookRequest);
+    ResponseEntity<BookDTO> save(String isbn,
+                                     String name,
+                                     String publishedYear,
+                                     Long stockCount,
+                                     MultipartFile image,
+                                     List<Long> authorId,
+                                     List<Long> studentId,
+                                     Long categoryId,
+                                     Long orderNumber) throws IOException;
 
     ResponseEntity<Book> update(Long id,
                                 String name,
                                 String isbn,
                                 String publishedYear,
-                                String image,
+                                MultipartFile image,
                                 Long stockCount,
                                 List<Long> authorId,
                                 Long categoryId,
-                                List<Long> studentId);
+                                List<Long> studentId,
+                                Long orderNumber
+                                ) throws IOException;
 
     ResponseEntity<List<BookDTO>> getAllBooks();
 

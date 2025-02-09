@@ -4,19 +4,30 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
     <changeSet id="2" author="Orkhan Shireliyev">
         <createTable tableName="book">
             <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="book_id_pk" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(250)"></column>
-            <column name="isbn" type="varchar(250)"></column>
-            <column name="published_year" type="varchar(50)"></column>
-            <column name="image" type="varchar(250)"></column>
-            <column name="stock_count" type="bigint"></column>
-            <column name="category_id" type="bigint"></column>
-            <column name="order_id" type="bigint"></column>
+            <column name="name" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isbn" type="varchar(250)"/>
+            <column name="published_year" type="varchar(50)"/>
+            <column name="image" type="varchar(250)"/>
+            <column name="stock_count" type="bigint"/>
         </createTable>
-<!--        <addAutoIncrement tableName="book" columnName="id" columnDataType="bigint" startWith="1"/>-->
     </changeSet>
+    <changeSet id="2-1" author="Orkhan Shireliyev">
+        <addColumn tableName="book">
+            <column name="category_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2-2" author="Orkhan Shireliyev">
+        <addColumn tableName="book">
+            <column name="orders_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

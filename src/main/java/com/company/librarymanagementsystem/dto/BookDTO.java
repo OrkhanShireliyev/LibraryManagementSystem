@@ -2,6 +2,7 @@ package com.company.librarymanagementsystem.dto;
 
 import com.company.librarymanagementsystem.model.Author;
 import com.company.librarymanagementsystem.model.Category;
+import com.company.librarymanagementsystem.model.Order;
 import com.company.librarymanagementsystem.model.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,4 +25,5 @@ public class BookDTO {
     private List<Author> authors;
     private Category category;
     private List<Student> students;
+    private Order order;
 }

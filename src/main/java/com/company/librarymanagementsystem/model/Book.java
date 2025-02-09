@@ -3,6 +3,8 @@ package com.company.librarymanagementsystem.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,29 +24,33 @@ public class Book {
     private String image;
     private Long stockCount;
 
-    @ManyToMany(mappedBy = "books")
-//    @JoinTable(
-//            name = "book_author",
-//            joinColumns = @JoinColumn(name = "book_id"),
-//            inverseJoinColumns = @JoinColumn(name = "author_id")
-//    )
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "book_author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private List<Author> authors=new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "book_student",
-            joinColumns = @JoinColumn(name = "book_id"),
+            joinColumns = @JoinColumn(name = "book_id", nullable = true),
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
+    @JsonIgnore
     private List<Student> students;
 
     @ManyToOne()
     @JoinColumn(name = "orders_id")
+    @JsonIgnore
     private Order order;
 
     @Override

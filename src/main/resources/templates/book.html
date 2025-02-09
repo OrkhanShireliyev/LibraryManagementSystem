@@ -1,325 +1,620 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kitablar - Admin Panel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f3f4f6;
-      font-family: 'Poppins', sans-serif;
-    }
-    .card {
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-      transition: all 0.4s ease-in-out;
-    }
-    .card:hover {
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      transform: translateY(-10px);
-    }
-    .card-header {
-      background: linear-gradient(90deg, #6a11cb, #2575fc);
-      color: white;
-      border-radius: 15px 15px 0 0;
-      padding: 25px;
-      font-size: 1.8rem;
-      font-weight: 600;
-      text-align: center;
-    }
-    .card-body {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 0 0 15px 15px;
-    }
-    .table-striped tbody tr:nth-of-type(odd) {
-      background-color: #f9f9f9;
-    }
-    .table-hover tbody tr:hover {
-      background-color: #e9ecef;
-      cursor: pointer;
-    }
-    .btn-custom {
-      background: linear-gradient(90deg, #6a11cb, #2575fc);
-      color: white;
-      border-radius: 50px;
-      padding: 10px 25px;
-      transition: all 0.3s ease;
-    }
-    .btn-custom:hover {
-      background: linear-gradient(90deg, #2575fc, #6a11cb);
-      transform: translateY(-5px);
-    }
-    .btn-danger-custom {
-      background-color: #dc3545;
-      color: white;
-      border-radius: 50px;
-      padding: 10px 25px;
-      transition: all 0.3s ease;
-    }
-    .btn-danger-custom:hover {
-      background-color: #c82333;
-      transform: translateY(-5px);
-    }
-    .btn-warning-custom {
-      background-color: #ffc107;
-      color: white;
-      border-radius: 50px;
-      padding: 10px 25px;
-      transition: all 0.3s ease;
-    }
-    .btn-warning-custom:hover {
-      background-color: #e0a800;
-      transform: translateY(-5px);
-    }
-    .table th, .table td {
-      vertical-align: middle;
-    }
-    .search-bar {
-      margin-bottom: 20px;
-      border-radius: 50px;
-    }
-    .card-footer {
-      background-color: #f9f9f9;
-      border-radius: 0 0 15px 15px;
-      padding: 20px;
-      text-align: center;
-      font-size: 1rem;
-      color: #888;
-    }
-    .action-btns {
-      display: flex;
-      gap: 10px;
-    }
-    .action-btns a {
-      transition: transform 0.3s ease;
-    }
-    .action-btns a:hover {
-      transform: scale(1.1);
-    }
-    .highlight {
-      background-color: yellow;
-      color: black;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px);
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #e9ecef;
+            cursor: pointer;
+        }
+
+        .btn-custom {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            transform: translateY(-5px);
+        }
+
+        .btn-danger-custom {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger-custom:hover {
+            background-color: #c82333;
+            transform: translateY(-5px);
+        }
+
+        .btn-warning-custom {
+            background-color: #ffc107;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #e0a800;
+            transform: translateY(-5px);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            border-radius: 50px;
+        }
+
+        .card-footer {
+            background-color: #f9f9f9;
+            border-radius: 0 0 15px 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btns a {
+            transition: transform 0.3s ease;
+        }
+
+        .action-btns a:hover {
+            transform: scale(1.1);
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container mt-5">
-  <div class="card">
-    <div class="card-header">
-      Kitablar Siyahısı
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-6">
-          <a href="javascript:void(0);" class="btn btn-custom mb-3" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openModal('create')"><i class="fas fa-plus"></i> Yeni Kitab Yarat</a>
+    <div class="card">
+        <div class="card-header">
+            Book List
         </div>
-        <div class="col-md-6 text-end">
-          <input type="text" class="form-control search-bar" id="searchInput" placeholder="Axtarış edin..." aria-label="Search" onkeyup="searchBooks()">
-        </div>
-      </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="javascript:void(0);" class="btn btn-custom mb-3" data-bs-toggle="modal"
+                       data-bs-target="#bookModal"
+                       onclick="openModal('create')"><i class="fas fa-plus"></i> Create New Book</a>
+                </div>
+                <div class="col-md-6 text-end">
+                    <input type="text" class="form-control search-bar" id="searchInput" placeholder="Search..."
+                           aria-label="Search" onkeyup="searchBooks()">
+                </div>
+            </div>
 
-      <table class="table table-striped table-hover">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Ad</th>
-          <th>ISBN</th>
-          <th>İl</th>
-          <th>Şəkil</th>
-          <th>Stok</th>
-          <th>Yazarlar</th>
-          <th>Kateqoriya</th>
-          <th>Studentlər</th>
-          <th>Əməliyyatlar</th>
-        </tr>
-        </thead>
-        <tbody id="bookList">
-        <tr>
-          <td>1</td>
-          <td class="book-name">Kitab 1</td>
-          <td class="book-isbn">123456</td>
-          <td class="book-publishedYear">2020</td>
-          <td class="book-image"><img src="image1.jpg" alt="Book Image" width="50"></td>
-          <td class="book-stockCount">10</td>
-          <td class="book-authors">
-            <ul>
-              <li>Yazar 1</li>
-              <li>Yazar 2</li>
-            </ul>
-          </td>
-          <td class="book-category">Fiction</td>
-          <td class="book-students">
-            <ul>
-              <li>Student 1</li>
-              <li>Student 2</li>
-            </ul>
-          </td>
-          <td class="action-btns">
-            <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openModal('edit', 1)"><i class="fas fa-edit"></i> Redaktə et</a>
-            <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openModal('delete', 1)"><i class="fas fa-trash-alt"></i> Sil</a>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td class="book-name">Kitab 2</td>
-          <td class="book-isbn">654321</td>
-          <td class="book-publishedYear">2021</td>
-          <td class="book-image"><img src="image2.jpg" alt="Book Image" width="50"></td>
-          <td class="book-stockCount">15</td>
-          <td class="book-authors">
-            <ul>
-              <li>Yazar 3</li>
-            </ul>
-          </td>
-          <td class="book-category">Non-Fiction</td>
-          <td class="book-students">
-            <ul>
-              <li>Student 3</li>
-            </ul>
-          </td>
-          <td class="action-btns">
-            <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openModal('edit', 2)"><i class="fas fa-edit"></i> Redaktə et</a>
-            <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#bookModal" onclick="openModal('delete', 2)"><i class="fas fa-trash-alt"></i> Sil</a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Name</th>
+                    <th>ISBN</th>
+                    <th>Published Year</th>
+                    <th>Picture</th>
+                    <th>Stock</th>
+                    <th>Authors</th>
+                    <th>Category</th>
+                    <th>Students</th>
+                    <th>Orders</th>
+                    <th>Operations</th>
+                </tr>
+                </thead>
+                <tbody id="bookList">
+                <tr>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <p class="mb-0" id="totalBooks"></p>
+        </div>
     </div>
-    <div class="card-footer">
-      <p class="mb-0" id="totalBooks">Toplam 2 kitab mövcuddur</p>
-    </div>
-  </div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="bookModalLabel">Kitab Əməliyyatı</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="bookForm">
-          <div class="mb-3">
-            <label for="bookName" class="form-label">Ad</label>
-            <input type="text" class="form-control" id="bookName" required>
-          </div>
-          <div class="mb-3">
-            <label for="bookIsbn" class="form-label">ISBN</label>
-            <input type="text" class="form-control" id="bookIsbn" required>
-          </div>
-          <div class="mb-3">
-            <label for="bookPublishedYear" class="form-label">İl</label>
-            <input type="text" class="form-control" id="bookPublishedYear" required>
-          </div>
-          <div class="mb-3">
-            <label for="bookImage" class="form-label">Şəkil</label>
-            <input type="file" class="form-control" id="bookImage">
-          </div>
-          <div class="mb-3">
-            <label for="bookStockCount" class="form-label">Stok Sayı</label>
-            <input type="number" class="form-control" id="bookStockCount" required>
-          </div>
-          <div class="mb-3">
-            <label for="bookAuthors" class="form-label">Yazarlar</label>
-            <select class="form-control" id="bookAuthors" multiple required>
-              <option value="1">Yazar 1</option>
-              <option value="2">Yazar 2</option>
-              <option value="3">Yazar 3</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="bookCategory" class="form-label">Kateqoriya</label>
-            <select class="form-control" id="bookCategory" required>
-              <option value="Fiction">Fiction</option>
-              <option value="Non-Fiction">Non-Fiction</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="bookStudents" class="form-label">Studentlər</label>
-            <select class="form-control" id="bookStudents" multiple required>
-              <option value="1">Student 1</option>
-              <option value="2">Student 2</option>
-              <option value="3">Student 3</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bağla</button>
-        <button type="button" class="btn btn-primary" id="modalActionBtn">Əməliyyat</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalLabel">Book Operation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bookForm">
+                    <input type="hidden" id="bookId"/>
+                    <div class="mb-3">
+                        <label for="bookName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="bookName" required placeholder="Enter name...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookIsbn" class="form-label">ISBN</label>
+                        <input type="text" class="form-control" id="bookIsbn" required placeholder="Enter ISBN...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookPublishedYear" class="form-label">Published Year</label>
+                        <input type="text" class="form-control" id="bookPublishedYear" required
+                               placeholder="Enter published year...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookImage" class="form-label">Picture</label>
+                        <input type="file" class="form-control" id="bookImage" placeholder="Choose picture...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookStockCount" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="bookStockCount" required
+                               placeholder="Enter stock count...">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookAuthors" class="form-label">Authors</label>
+                        <select class="form-control" id="bookAuthors" multiple required placeholder="Choose authors...">
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookCategory" class="form-label">Category</label>
+                        <select class="form-control" id="bookCategory" required placeholder="Choose category...">
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookStudents" class="form-label">Students</label>
+                        <select class="form-control" id="bookStudents" multiple required
+                                placeholder="Choose students...">
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookOrder" class="form-label">Orders</label>
+                        <select class="form-control" id="bookOrder" required placeholder="Choose order...">
+                            <option value="">Choose</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="deleteWarning" style="display: none; color: navy;">
+                        <p>Are you sure you want to delete this writer?</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="modalActionBtn">Confirm</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-  function searchBooks() {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('#bookList tr');
-    let visibleCount = 0;
-
-    rows.forEach(row => {
-      const bookName = row.querySelector('.book-name').textContent.toLowerCase();
-      const bookIsbn = row.querySelector('.book-isbn').textContent.toLowerCase();
-      const bookPublishedYear = row.querySelector('.book-publishedYear').textContent.toLowerCase();
-      const bookAuthors = row.querySelector('.book-authors').textContent.toLowerCase();
-      const bookCategory = row.querySelector('.book-category').textContent.toLowerCase();
-      const bookStudents = row.querySelector('.book-students').textContent.toLowerCase();
-
-      if (bookName.includes(searchInput) || bookIsbn.includes(searchInput) || bookPublishedYear.includes(searchInput) || bookAuthors.includes(searchInput) || bookCategory.includes(searchInput) || bookStudents.includes(searchInput)) {
-        row.style.display = '';
-        visibleCount++;
-        highlightText(row, searchInput);
-      } else {
-        row.style.display = 'none';
-      }
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchBooks();
     });
 
-    document.getElementById('totalBooks').textContent = `Toplam ${visibleCount} kitab mövcuddur`;
-  }
+    function fetchBooks() {
+        fetch('/book/books')
+            .then(response => response.json())
+            .then(books => {
+                console.log(books);
+                const bookList = document.getElementById('bookList');
+                bookList.innerHTML = '';
 
-  function highlightText(row, searchInput) {
-    const cells = row.querySelectorAll('td');
-    cells.forEach(cell => {
-      const originalText = cell.textContent;
-      const highlightedText = originalText.replace(new RegExp(searchInput, 'gi'), match => {
-        return `<span class="highlight">${match}</span>`;
-      });
-      cell.innerHTML = highlightedText;
-    });
-  }
+                books.forEach((book, index) => {
+                    const row = document.createElement('tr');
 
-  function openModal(action, id) {
-    const modalActionBtn = document.getElementById('modalActionBtn');
-    const bookForm = document.getElementById('bookForm');
-    const bookName = document.getElementById('bookName');
-    const bookIsbn = document.getElementById('bookIsbn');
-    const bookPublishedYear = document.getElementById('bookPublishedYear');
-    const bookStockCount = document.getElementById('bookStockCount');
-    const bookAuthors = document.getElementById('bookAuthors');
-    const bookCategory = document.getElementById('bookCategory');
-    const bookStudents = document.getElementById('bookStudents');
+                    row.innerHTML = `
+                    <td style="display: none;">${book.id}</td>
+                    <td class="book-index">${index + 1}</td>
+                    <td class="book-name">${book.name}</td>
+                    <td class="book-isbn">${book.isbn}</td>
+                    <td class="book-publishedYear">${book.publishedYear}</td>
+                    <td class="book-image">
+                        ${book.image ? `<img src="${book.image}" alt="Kitab şəkli" style="width: 50px; height: 50px; object-fit: cover;">` : 'Not found picture'}
+                    </td>
+                    <td class="book-stockCount">${book.stockCount}</td>
+                    <td class="book-authors">
+                        ${book.authors && book.authors.length > 0
+                        ? book.authors.map(author => author.name + ' ' + author.surname).join(', ')
+                        : 'Not found author'}
+                    </td>
+                    <td class="book-category">${book.category ? book.category.name : 'Not found category'}</td>
+                    <td class="book-students">
+                        ${book.students && book.students.length > 0
+                        ? book.students.map(student => student.name).join(', ')
+                        : 'Not found student'}
+                    </td>
 
-    if (action === 'create') {
-      modalActionBtn.textContent = 'Kitab Yarat';
-      bookForm.reset();
-    } else if (action === 'edit') {
-      modalActionBtn.textContent = 'Kitabı Redaktə Et';
-      // Fetch and fill data for editing
-    } else if (action === 'delete') {
-      modalActionBtn.textContent = 'Kitabı Sil';
-      // Prepare for delete action
+                    <td class="book-order">
+                        ${book.order ? book.order.orderNumber : 'Not found order'}
+                    </td>
+                    <td class="action-btns">
+                        <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#bookModal" onclick="openModal('edit', ${book.id})"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal"
+                         data-bs-target="#bookModal" onclick="openModal('delete', ${book.id})"><i class="fas fa-trash-alt"></i> Delete</a>
+                    </td>
+                `;
+
+                    bookList.appendChild(row);
+                });
+
+                const totalBooks = document.getElementById('totalBooks');
+                totalBooks.textContent = `Total ${books.length} books available`;
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
     }
-  }
+
+
+    function searchBooks() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#bookList tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const bookName = row.querySelector('.book-name').textContent.toLowerCase();
+            const bookIsbn = row.querySelector('.book-isbn').textContent.toLowerCase();
+            const bookPublishedYear = row.querySelector('.book-publishedYear').textContent.toLowerCase();
+            const bookAuthors = row.querySelector('.book-authors').textContent.toLowerCase();
+            const bookCategory = row.querySelector('.book-category').textContent.toLowerCase();
+            const bookStudents = row.querySelector('.book-students').textContent.toLowerCase();
+
+            if (bookName.includes(searchInput) || bookIsbn.includes(searchInput) || bookPublishedYear.includes(searchInput) ||
+                bookAuthors.includes(searchInput) || bookCategory.includes(searchInput) || bookStudents.includes(searchInput)) {
+                row.style.display = '';
+                visibleCount++;
+                highlightText(row, searchInput);
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        document.getElementById('totalBooks').textContent = `Total ${visibleCount} books available`;
+    }
+
+    function highlightText(row, searchInput) {
+        const cells = row.querySelectorAll('td');
+        cells.forEach(cell => {
+            const originalText = cell.textContent;
+            const highlightedText = originalText.replace(new RegExp(searchInput, 'gi'), match => {
+                return `<span class="highlight">${match}</span>`;
+            });
+            cell.innerHTML = highlightedText;
+        });
+    }
+
+    function loadAuthors() {
+        fetch('/author/authors')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Unable to load authors');
+                }
+
+                return response.json()
+            })
+            .then(authors => {
+                const authorSelect = document.getElementById('bookAuthors');
+
+                authorSelect.innerHTML = '';
+
+                authors.forEach(author => {
+                    const option = document.createElement('option');
+                    option.value = author.id;
+                    option.textContent = `${author.name} ${author.surname}`;
+                    authorSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Unable to load authors:', error));
+    }
+
+    function loadStudents() {
+        fetch('/student/students')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Unable to load students');
+                }
+
+                return response.json()
+            })
+            .then(student => {
+                const studentSelect = document.getElementById('bookStudents');
+
+                studentSelect.innerHTML = '';
+
+                student.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.name} ${student.surname}`;
+                    studentSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Unable to load students:', error));
+    }
+
+    function loadCategories() {
+        fetch('/category/categories')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Unable to load categories');
+                }
+                return response.json()
+            })
+            .then(category => {
+                const categorySelect = document.getElementById('bookCategory');
+
+                categorySelect.innerHTML = '';
+
+                category.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = `${category.name}`;
+                    categorySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Unable to load categories:', error));
+    }
+
+    function loadOrders() {
+        fetch('/order/orders')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Unable to load orders: ${response.status} - ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(orders => {
+                if (!Array.isArray(orders)) {
+                    throw new Error('Incoming data is not in array format.!');
+                }
+
+                const orderSelect = document.getElementById("bookOrder");
+                orderSelect.innerHTML = '';
+                console.log('Incoming data:', orders);
+
+                orders.forEach(order => {
+                    const option = document.createElement('option');
+                    option.value = order.id;
+                    option.textContent = `${order.orderNumber}`;
+                    orderSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error occurred:', error));
+    }
+
+    document.getElementById('bookModal').addEventListener('show.bs.modal', function () {
+        document.getElementById('bookForm').reset();
+        loadAuthors();
+        loadCategories();
+        loadStudents();
+        loadOrders();
+    });
+
+    function createBook() {
+        const name = document.getElementById('bookName').value;
+        const isbn = document.getElementById('bookIsbn').value;
+        const publishedYear = document.getElementById('bookPublishedYear').value;
+        const image = document.getElementById('bookImage').files[0];
+        const stockCount = document.getElementById('bookStockCount').value;
+        const authors = Array.from(document.getElementById('bookAuthors').selectedOptions).map(option => option.value);
+        const category = document.getElementById('bookCategory').value;
+        const students = Array.from(document.getElementById('bookStudents').selectedOptions).map(option => option.value);
+        const order = document.getElementById('bookOrder').value;
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('isbn', isbn);
+        formData.append('publishedYear', publishedYear);
+        formData.append('image', image);
+        formData.append('stockCount', stockCount);
+        formData.append('authors', authors.join(','));
+        formData.append('category', category);
+        formData.append('students', students.join(','));
+        formData.append('order', order);
+
+        console.log('Sending request to backend...');
+
+        fetch('/book/save', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`Error: ${response.status} - ${text}`);
+                });
+            }
+            return response.json().catch(() => null);
+        })
+            .then(responseData => {
+                if (responseData) {
+                    console.log('Book created:', responseData);
+                    $('#bookModal').modal('hide');
+                    alert('Book created!');
+                    location.reload();
+                } else {
+                    console.warn('No JSON response received from server!');
+                    alert('Book created, but no server response received!');
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+                alert(`Error occurred: ${error.message}`);
+            });
+
+    }
+
+    function editBook(bookId) {
+        const name = document.getElementById('bookName').value;
+        const isbn = document.getElementById('bookIsbn').value;
+        const publishedYear = document.getElementById('bookPublishedYear').value;
+        const image = document.getElementById('bookImage').files[0];
+        const stockCount = document.getElementById('bookStockCount').value;
+        const authors = Array.from(document.getElementById('bookAuthors').selectedOptions).map(option => option.value);
+        const category = document.getElementById('bookCategory').value;
+        const students = Array.from(document.getElementById('bookStudents').selectedOptions).map(option => option.value);
+        const order = document.getElementById('bookOrder').value;
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('isbn', isbn);
+        formData.append('publishedYear', publishedYear);
+        if (image) {
+            formData.append('image', image);
+        }
+        formData.append('stockCount', stockCount);
+        formData.append('authors', authors.join(','));
+        formData.append('category', category);
+        formData.append('students', students.join(','));
+        formData.append('order', order);
+
+        console.log('Sending update request to backend...');
+
+        fetch(`/book/update/${bookId}`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Book updated!');
+                    $('#bookModal').modal('hide');
+                    alert('Book updated!');
+                    location.reload();
+                } else {
+                    console.error('Could not update the book!');
+                    alert('An error occurred! Book does not updated!');
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
+    }
+
+    function deleteBook(bookId) {
+        fetch(`/book/delete/${bookId}`, {
+            method: 'POST',
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Book deleted:');
+                    $('#bookModal').modal('hide');
+                    alert('Book deleted!');
+                    location.reload();
+                } else {
+                    console.error('Could not delete book!');
+                    alert('An error occurred! The book could not be deleted!');
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
+    }
+
+    function openModal(action, bookId) {
+        console.log(`Action: ${action}, Book ID: ${bookId}`);
+        const modalTitle = document.getElementById('bookModalLabel');
+        const modalActionBtn = document.getElementById('modalActionBtn');
+        const deleteWarning = document.getElementById('deleteWarning');
+
+        document.getElementById('bookForm').reset();
+
+        const newBtn = modalActionBtn.cloneNode(true);
+        modalActionBtn.parentNode.replaceChild(newBtn, modalActionBtn);
+
+        newBtn.addEventListener('click', () => {
+            if (action === 'create') {
+                console.log('Creating a new book...');
+                createBook();
+            } else if (action === 'edit') {
+                console.log(`Editing book: ID=${bookId}`);
+                editBook(bookId);
+            } else if (action === 'delete') {
+                console.log(`Deleting book: ID=${bookId}`);
+                deleteBook(bookId);
+            }
+        });
+
+        if (action === 'create') {
+            modalTitle.textContent = 'Create Book';
+            newBtn.textContent = 'Create';
+            deleteWarning.style.display = 'none';
+        } else if (action === 'edit') {
+            modalTitle.textContent = 'Edit Book';
+            newBtn.textContent = 'Edit';
+            deleteWarning.style.display = 'none';
+            console.log(bookId);
+            document.getElementById('bookId').value = bookId;
+        } else if (action === 'delete') {
+            modalTitle.textContent = 'Delete Book';
+            newBtn.textContent = 'Delete';
+            deleteWarning.style.display = 'block';
+            console.log(bookId);
+            document.getElementById('bookId').value = bookId;
+        }
+        $('#bookModal').modal('show');
+    }
 </script>
 </body>
 </html>

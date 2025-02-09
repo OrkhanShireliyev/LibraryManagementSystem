@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Book -> Category -->
+    <changeSet id="8-1" author="Orkhan Shireliyev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_category"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="book"
+                baseColumnNames="category_id"
+                constraintName="fk_book_category"
+                referencedTableName="category"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+    </changeSet>
+
+    <!-- Book -> Orders -->
+    <changeSet id="8-2" author="Orkhan Shireliyev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_order"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="book"
+                baseColumnNames="orders_id"
+                constraintName="fk_book_order"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+    </changeSet>
+
+    <!-- Book_Author (Many-to-Many) -->
+    <changeSet id="8-3" author="Orkhan Shireliyev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_author_book"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="book_author"
+                baseColumnNames="book_id"
+                constraintName="fk_book_author_book"
+                referencedTableName="book"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="8-4" author="Orkhan Shireliyev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_author_book"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="book_author"
+                baseColumnNames="author_id"
+                constraintName="fk_book_author_author"
+                referencedTableName="author"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Book_Student (Many-to-Many) -->
+    <changeSet id="8-5" author="Orkhan Shireliyev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_student_book"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="book_student"
+                baseColumnNames="book_id"
+                constraintName="fk_book_student_book"
+                referencedTableName="book"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="8-6" author="Orkhan Shireliyev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_student_book"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="book_student"
+                baseColumnNames="student_id"
+                constraintName="fk_book_student_student"
+                referencedTableName="student"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="8-7" author="Orkhan Shireliyev">
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="student_id"
+                constraintName="fk_order_student"
+                referencedTableName="student"
+                referencedColumnNames="id"
+                onDelete="SET NULL"/>
+    </changeSet>
+
+</databaseChangeLog>
