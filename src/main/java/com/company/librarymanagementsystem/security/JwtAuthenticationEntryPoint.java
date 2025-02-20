@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class JwtAuthenticationEntryPoint  {
-//  private final Logger log = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
-//
-//  @Override
-//  public void commence(HttpServletRequest request, HttpServletResponse response,
-//                       AuthenticationException authException) throws IOException, ServletException {
-//    log.error("Responding with unauthorized error. Message - {}", authException.getMessage());
-//    response.sendError(401);
-//  }
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+  private final Logger log = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
+
+  @Override
+  public void commence(HttpServletRequest request, HttpServletResponse response,
+                       AuthenticationException authException) throws IOException, ServletException {
+    log.error("Responding with unauthorized error. Message - {}", authException.getMessage());
+    response.sendError(401);
+  }
 }
