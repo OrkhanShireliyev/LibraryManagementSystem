@@ -38,15 +38,15 @@ public class BookController {
                                  @RequestParam("authors") List<Long> authorId,
                                  @RequestParam("category") Long categoryId,
                                  @RequestParam("students") List<Long> studentId,
-                                 @RequestParam("order") Long orderNumber
+                                 @RequestParam("order") List<Long> orderId
                                 , Model model) throws IOException {
-        BookDTO bookDTO = bookServiceInter.save(isbn, name, publishedYear, stockCount, image, authorId, studentId, categoryId, orderNumber).getBody();
+        BookDTO bookDTO = bookServiceInter.save(isbn, name, publishedYear, stockCount, image, authorId, studentId, categoryId, orderId).getBody();
         model.addAttribute("bookDTO", bookDTO);
         return ResponseEntity.ok(bookDTO);
     }
 
     @PostMapping(value = "/update/{bookId}")
-    ResponseEntity<Book> update(
+    ResponseEntity<BookDTO> update(
             @PathVariable("bookId") Long id,
             @RequestParam("name") String name,
             @RequestParam("isbn") String isbn,
@@ -56,9 +56,9 @@ public class BookController {
             @RequestParam("authors") List<Long> authorId,
             @RequestParam("students") List<Long> studentId,
             @RequestParam("category") Long categoryId,
-            @RequestParam("order") Long orderNumber
+            @RequestParam("order") List<Long> orderId
     ) throws IOException {
-        Book book = bookServiceInter.update(id, name, isbn, publishedYear, image, stockCount, authorId, categoryId, studentId, orderNumber).getBody();
+        BookDTO book = bookServiceInter.update(id, name, isbn, publishedYear, image, stockCount, authorId, categoryId, studentId, orderId).getBody();
         System.out.println(book);
         return ResponseEntity.ok(book);
     }
@@ -70,10 +70,10 @@ public class BookController {
     }
 
     @GetMapping("/getById/{id}")
-    String getBookById(@PathVariable Long id, Model model) {
+    ResponseEntity<BookDTO> getBookById(@PathVariable Long id, Model model) {
         BookDTO bookDTO = bookServiceInter.getBookById(id).getBody();
         model.addAttribute("bookDTO", bookDTO);
-        return "book";
+        return ResponseEntity.ok(bookDTO);
     }
 
     @PostMapping("/delete/{id}")
