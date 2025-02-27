@@ -40,45 +40,44 @@
 <div class="container">
     <!-- Login Form -->
     <div id="loginForm" class="auth-container">
-        <h3>Giriş</h3>
+        <h3>Login</h3>
         <form onsubmit="handleLogin(event)">
             <div class="mb-3">
-                <label for="loginUsername" class="form-label">İstifadəçi Adı</label>
+                <label for="loginUsername" class="form-label">Username</label>
                 <input type="text" class="form-control" id="loginUsername" required>
             </div>
             <div class="mb-3">
-                <label for="loginPassword" class="form-label">Şifrə</label>
+                <label for="loginPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" id="loginPassword" required>
             </div>
-            <button type="submit" class="btn btn-primary">Daxil Ol</button>
+            <button type="submit" class="btn btn-primary">Enter</button>
         </form>
         <div class="register-link">
-            Qeydiyyatınız yoxdur? <a href="javascript:void(0);" onclick="showRegisterForm()">Qeydiyyatdan Keçin</a>
+            Don't have a registration? <a href="javascript:void(0);" onclick="showRegisterForm()">Register</a>
         </div>
     </div>
 
     <!-- Register Form -->
     <div id="registerForm" class="auth-container" style="display: none;">
-        <h3>Qeydiyyat</h3>
+        <h3>Registration</h3>
         <form onsubmit="handleRegister(event)">
             <div class="mb-3">
-                <label for="registerUsername" class="form-label">İstifadəçi Adı</label>
+                <label for="registerUsername" class="form-label">Username</label>
                 <input type="text" class="form-control" id="registerUsername" required>
             </div>
             <div class="mb-3">
-                <label for="registerPassword" class="form-label">Şifrə</label>
+                <label for="registerPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" id="registerPassword" required>
             </div>
-            <button type="submit" class="btn btn-success">Qeydiyyatdan Keç</button>
+            <button type="submit" class="btn btn-success">Register</button>
         </form>
         <div class="register-link">
-            Artıq qeydiyyatdan keçmisiniz? <a href="javascript:void(0);" onclick="showLoginForm()">Giriş</a>
+            Have you already registered?<a href="javascript:void(0);" onclick="showLoginForm()">Login</a>
         </div>
     </div>
 </div>
 
 <script>
-    const API_URL = "http://localhost:9090/auth"; // Backend API URL
 
     function showLoginForm() {
         document.getElementById('loginForm').style.display = 'block';
@@ -103,14 +102,17 @@
             });
 
             if (!response.ok) {
-                throw new Error('İstifadəçi adı və ya şifrə səhvdir!');
+                throw new Error('Username or password is incorrect!');
             }
 
             const data = await response.json();
-            localStorage.setItem('token', data.token); // Token saxlanılır
-            alert('Giriş uğurludur!');
-            window.location.href = "http://localhost:9090/admin"; // Admin panelə yönləndirilir
+            localStorage.setItem('token', data.token);
+
+            console.log(localStorage.getItem('token'));
+            alert('Login successful!');
+            window.location.href = "/admin";
         } catch (error) {
+            console.error(error);
             alert(error.message);
         }
     }
@@ -128,12 +130,13 @@
             });
 
             if (!response.ok) {
-                throw new Error('Qeydiyyat zamanı xəta baş verdi!');
+                throw new Error('An error occurred during registration!');
             }
 
-            alert('Qeydiyyat uğurla tamamlandı!');
+            alert('Registration completed successfully!');
             showLoginForm();
         } catch (error) {
+            console.error(error);
             alert(error.message);
         }
     }

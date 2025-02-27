@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Rent Site</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-custom.scrolled {
+            background: rgba(106, 17, 203, 0.9);
+            padding: 10px 0;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #ffc107 !important;
+        }
+
+        .dropdown-menu-custom {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item-custom {
+            color: white !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item-custom:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffc107 !important;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin-left: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            border-radius: 50px;
+            padding: 10px 20px;
+            border: none;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            width: 300px;
+            outline: none;
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #6a11cb;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 150px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .hero-section p {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .btn-hero {
+            background-color: #ffc107;
+            color: #333;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+
+        .btn-hero:hover {
+            background-color: #e0a800;
+            transform: translateY(-5px);
+        }
+
+        /* Books Grid */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            animation: fadeIn 1s ease;
+            position: relative;
+            text-align: center;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .book-card .book-info {
+            padding: 20px;
+        }
+
+        .book-card .book-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .book-card .btn-details {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .book-card .btn-details:hover {
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            transform: translateY(-5px);
+        }
+
+        /* Modal Stili */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-body h5 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .modal-body p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Footer */
+        .footer-custom {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-custom a {
+            color: #ffc107;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-custom a:hover {
+            color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/lms/">📚 BOOK STATİON</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/lms/">Home Page</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAuthors" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Authors
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-custom" aria-labelledby="navbarDropdownAuthors">
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategory" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Category
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-custom" aria-labelledby="navbarDropdownCategory">
+                    </ul>
+                </li>
+                <li class="nav-item search-bar">
+                    <input type="text" id="searchInput" placeholder="Search book..." oninput="searchBooks()">
+                    <button onclick="searchBooks()"><i class="fas fa-search"></i></button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section id="home" class="hero-section">
+    <div class="container">
+        <h1>Book Rental Site</h1>
+        <p>The newest and most popular books are here!</p>
+        <a href="#books" class="btn btn-hero">Discover Books</a>
+    </div>
+</section>
+
+<section id="books" class="books-grid">
+</section>
+
+<footer class="footer-custom">
+    <div class="container">
+        <p>&copy; 2025 Book Station. All rights reserved.</p>
+        <p>
+            <a th:href="@{/privacy-policy}" target="_blank">Privacy Policy</a>
+            <a th:href="@{/terms-conditions}" target="_blank">Terms and Conditions</a>
+        </p>
+    </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalLabel">About Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Kitab Şəkli">
+                <h5 id="modalTitle"></h5>
+                <p id="modalAuthor"></p>
+                <p id="modalCategory"></p>
+                <p id="modalIsbn"></p>
+                <p id="modalPublishedYear"></p>
+                <p id="modalStockCount"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const API_BASE_URL = "http://localhost:9090";
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadAuthors();
+        loadCategories();
+        loadBooks();
+    });
+
+    async function loadAuthors() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/author/authors`);
+            const authors = await response.json();
+            const authorDropdown = document.getElementById("navbarDropdownAuthors").nextElementSibling;
+            authorDropdown.innerHTML = authors.map(author =>
+                `<li><a class="dropdown-item dropdown-item-custom" href="javascript:void(0);"
+                 onclick="filterByAuthor(${author.id})">${author.name + ' ' + author.surname}</a></li>`
+            ).join('');
+        } catch (error) {
+            console.error("An error occurred while loading authors:", error);
+        }
+    }
+
+    async function loadCategories() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/category/categories`);
+            const categories = await response.json();
+            const categoryDropdown = document.getElementById("navbarDropdownCategory").nextElementSibling;
+            categoryDropdown.innerHTML = categories.map(category =>
+                `<li><a class="dropdown-item dropdown-item-custom" href="javascript:void(0);"
+                 onclick="filterByCategory(${category.id})">${category.name}</a></li>`
+            ).join('');
+        } catch (error) {
+            console.error("An error occurred while loading categories:", error);
+        }
+    }
+
+    async function loadBooks() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/book/books`);
+            const books = await response.json();
+            displayBooks(books);
+        } catch (error) {
+            console.error("An error occurred while loading books:", error);
+        }
+    }
+
+    function displayBooks(books) {
+        console.log("Books are displayed:", books);
+
+        const booksGrid = document.getElementById("books");
+        booksGrid.innerHTML = books.map(book => `
+        <div class="book-card">
+            <img src="${book.image || 'placeholder.jpg'}" alt="${book.name || 'Unknown book!'}">
+            <div class="book-info">
+                <div class="book-title">${book.name || 'Unknown book!'}</div>
+                <p>Author: ${book.authors && book.authors.length > 0
+            ? book.authors.map(author => author.name + ' ' + author.surname).join(', ')
+            : 'Author not found!'}</p>
+                <p>Category: ${book.category ? book.category.name : 'Category not found!'}</p>
+                <a href="javascript:void(0);" class="btn-details" onclick="openModal(
+                    '${book.name || 'Unknown book!'}',
+                    '${book.authors && book.authors.length > 0
+            ? book.authors.map(author => author.name + ' ' + author.surname).join(', ') : 'Author not found!'}',
+                    '${book.image || 'placeholder.jpg'}',
+                     '${book.category ? book.category.name : 'Category not found!'}',
+                    '${book.isbn || 'ISBN not found!'}',
+                    '${book.publishedYear || 'Published year not found!'}',
+                    '${book.stockCount || 'Stock count not found!'}')">More</a>
+            </div>
+        </div>
+    `).join('');
+    }
+
+    async function filterByAuthor(authorId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/author/getById/${authorId}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            const author = await response.json();
+            console.log("Incoming author information:", author);
+            console.log("Author's books:", author.books);
+            if (!author || !author.books) {
+                console.warn("No books by this author were found!");
+                displayBooks([]);
+                return;
+            }
+            displayBooks(author.books);
+        } catch (error) {
+            console.error("An error occurred while filtering books by author:", error);
+        }
+    }
+
+    async function filterByCategory(categoryId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/category/getById/${categoryId}`);
+            const category = await response.json();
+            console.log("Incoming category information:", category);
+            console.log("Category's books:", category.books);
+
+            if (!category || !category.books) {
+                console.warn("Bu category aid kitab tapılmadı.");
+                displayBooks([]);
+                return;
+            }
+            displayBooks(category.books);
+        } catch (error) {
+            console.error("An error occurred while filtering books by category:", error);
+        }
+    }
+
+    function searchBooks() {
+        const searchText = document.getElementById("searchInput").value.toLowerCase();
+        const bookCards = document.querySelectorAll(".book-card");
+
+        bookCards.forEach(card => {
+            const titleElement = card.querySelector(".book-title");
+            const titleText = titleElement.textContent;
+
+            if (titleText.toLowerCase().includes(searchText) && searchText !== "") {
+                card.style.display = "block";
+
+                const regex = new RegExp(`(${searchText})`, "gi");
+                titleElement.innerHTML = titleText.replace(regex, `<mark>$1</mark>`);
+            } else {
+                card.style.display = searchText === "" ? "block" : "none";
+                titleElement.innerHTML = titleText;
+            }
+        });
+    }
+
+
+    function openModal(name, author, imageUrl, category, isbn, publishedYear, stockCount) {
+        document.getElementById("modalImage").src = imageUrl;
+        document.getElementById("modalTitle").textContent = name;
+        document.getElementById("modalAuthor").textContent = "Author: " + author;
+        document.getElementById("modalCategory").textContent = "Category: " + category;
+        document.getElementById("modalIsbn").textContent = "ISBN: " + isbn;
+        document.getElementById("modalPublishedYear").textContent = "PublishedYear: " + publishedYear;
+        document.getElementById("modalStockCount").textContent = "StockCount: " + stockCount;
+
+        const myModal = new bootstrap.Modal(document.getElementById("bookModal"));
+        myModal.show();
+    }
+</script>
+</body>
+</html>

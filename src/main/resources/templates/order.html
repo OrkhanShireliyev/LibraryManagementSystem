@@ -1,10 +1,653 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px);
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #e9ecef;
+            cursor: pointer;
+        }
+
+        .btn-custom {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            transform: translateY(-5px);
+        }
+
+        .btn-danger-custom {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger-custom:hover {
+            background-color: #c82333;
+            transform: translateY(-5px);
+        }
+
+        .btn-warning-custom {
+            background-color: #ffc107;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #e0a800;
+            transform: translateY(-5px);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            border-radius: 50px;
+        }
+
+        .card-footer {
+            background-color: #f9f9f9;
+            border-radius: 0 0 15px 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btns a {
+            transition: transform 0.3s ease;
+        }
+
+        .action-btns a:hover {
+            transform: scale(1.1);
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            Order Management
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <a href="javascript:void(0);" class="btn btn-custom me-2" data-bs-toggle="modal"
+                           data-bs-target="#orderModal" onclick="openModal('create')">
+                            <i class="fas fa-plus"></i> Create New Order
+                        </a>
+
+                        <a href="javascript:void(0);" class="btn btn-custom" data-bs-toggle="modal"
+                           data-bs-target="#orderModal" onclick="openModal('return')">
+                            <i class="fas fa-plus"></i> Return Book Order
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 text-end">
+                        <input type="text" class="form-control search-bar" id="searchInput" placeholder="Search..."
+                               aria-label="Search">
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Order Number</th>
+                    <th>Order Date</th>
+                    <th>Delivery Time</th>
+                    <th>Books</th>
+                    <th>Student</th>
+                    <th>Operations</th>
+                </tr>
+                </thead>
+                <tbody id="orderList">
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <p class="mb-0" id="totalOrders"></p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel">Order Operation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="orderForm">
+                    <input type="hidden" id="orderId" name="orderId">
+                    <div class="mb-3">
+                        <label id="orderNumberLabel" for="orderNumber" class="form-label">Order Number</label>
+                        <input type="text" class="form-control" id="orderNumber" required
+                               placeholder="Enter order number...">
+                    </div>
+                    <div class="mb-3">
+                        <label id="orderDateLabel" for="orderDate" class="form-label">Order Date</label>
+                        <input type="date" class="form-control" id="orderDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label id="deliveryTimeLabel" for="deliveryTime" class="form-label">Delivery Time</label>
+                        <input type="date" class="form-control" id="deliveryTime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label id="orderBooksLabel" for="orderBooks" class="form-label">Books</label>
+                        <select multiple class="form-control" id="orderBooks">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label id="orderStudentLabel" for="orderStudent" class="form-label">Student</label>
+                        <select class="form-control" id="orderStudent">
+                        </select>
+                    </div>
+                    <div class="mb-3" id="deleteWarning" style="display: none;">
+                        <p>Are you sure you want to delete this order?</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
+                <button type="button" class="btn btn-danger" id="modalActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap və FontAwesome scriptləri -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.getElementById("closeModalBtn").addEventListener("click", function () {
+        let modal = bootstrap.Modal.getInstance(document.getElementById('orderModal'));
+        modal.hide();
+        location.reload();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchOrders();
+        fetchBooks();
+        fetchStudents();
+    });
+
+    function fetchOrders() {
+        fetch('/order/orders')
+            .then(response => response.json())
+            .then(orders => {
+                const orderList = document.getElementById('orderList');
+                const totalOrders = document.getElementById('totalOrders');
+                orderList.innerHTML = '';
+
+                orders.forEach((order, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td style="display: none">${order.id}</td>
+                    <td class="order-index">${index + 1}</td>
+                    <td class="order-orderNumber">${order.orderNumber}</td>
+                    <td class="order-orderDate">${order.localDate}</td>
+                    <td class="order-deliveryDate">
+                        ${order.deliveryTime ? order.deliveryTime : "Active order"}
+                    </td>
+                    <td class="order-books">
+                        ${order.books && order.books.length > 0
+                        ? order.books.map(book => book.name).join(', ')
+                        : 'No books found'}
+                    </td>
+                    <td class="order-student">
+                        ${order.student ? order.student.name + ' '+ order.student.surname : 'No student found'}
+                    </td>
+                    <td class="action-btns">
+                        <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal"
+                           data-bs-target="#orderModal" onclick="openModal('edit', ${order.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal"
+                           data-bs-target="#orderModal" onclick="openModal('delete', ${order.id})">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </a>
+                    </td>
+                    `;
+                    orderList.appendChild(row);
+                });
+
+                totalOrders.textContent = `Total ${orders.length} orders available`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#orderList tr');
+        let totalOrders = 0;
+        let rowIndex = 1;
+
+        rows.forEach(row => {
+            const orderNumberCell = row.querySelector('.order-orderNumber')
+            const localDateCell = row.querySelector('.order-orderDate');
+            const deliveryCell = row.querySelector('.order-deliveryDate');
+            const bookCell = row.querySelector('.order-books');
+            const studentCell = row.querySelector('.order-student')
+
+            const orderNumberText = orderNumberCell.textContent.toLowerCase();
+            const localDateText = localDateCell.textContent.toLowerCase();
+            const deliveryText = deliveryCell.textContent.toLowerCase();
+            const bookText = bookCell.textContent.toLowerCase();
+            const studentText = studentCell.textContent.toLowerCase();
+
+            if (orderNumberText.includes(searchTerm) || localDateText.includes(searchTerm) ||
+                deliveryText.includes(searchTerm) || bookText.includes(searchTerm) ||
+                studentText.includes(searchTerm)) {
+                row.style.display = '';
+                totalOrders++;
+                highlightText(orderNumberCell, searchTerm);
+                highlightText(localDateCell, searchTerm);
+                highlightText(deliveryCell, searchTerm);
+                highlightText(bookCell, searchTerm);
+                highlightText(studentCell, searchTerm);
+
+                row.querySelector('.order-index').textContent = rowIndex++;
+            } else {
+                row.style.display = 'none';
+                removeHighlight(orderNumberCell);
+                removeHighlight(localDateCell);
+                removeHighlight(deliveryCell);
+                removeHighlight(bookCell);
+                removeHighlight(studentCell);
+            }
+        });
+        document.getElementById('totalOrders').textContent = `Total ${totalOrders} orders available`;
+    });
+
+    function highlightText(element, searchTerm) {
+        const text = element.textContent;
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+        element.innerHTML = highlightedText;
+    }
+
+    function removeHighlight(element) {
+        element.innerHTML = element.textContent;
+    }
+
+
+
+    function fetchBooks() {
+        fetch('/book/books')
+            .then(response => response.json())
+            .then(books => {
+                const orderBooksSelect = document.getElementById('orderBooks');
+                orderBooksSelect.innerHTML = '';
+
+                books.forEach(book => {
+                    const option = document.createElement('option');
+                    option.value = book.id;
+                    option.textContent = book.name + ` (${book.stockCount} left)`;
+                    option.setAttribute('data-stock', book.stockCount);
+
+                    if (book.stockCount <= 0) {
+                        option.disabled = true;
+                    }
+
+                    orderBooksSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching books:', error));
+    }
+
+    function fetchStudents() {
+        fetch('/student/students')
+            .then(response => response.json())
+            .then(students => {
+                const orderStudentSelect = document.getElementById('orderStudent');
+                orderStudentSelect.innerHTML = '';
+
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = student.name+` `+student.surname;
+                    orderStudentSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function loadBooks() {
+        fetch('/book/books')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Unable to load books');
+                }
+
+                return response.json();
+            })
+            .then(books => {
+                const bookSelect = document.getElementById('orderBooks');
+                bookSelect.innerHTML = '';
+
+                books.forEach(book => {
+                    const option = document.createElement('option');
+                    option.value = book.id;
+                    option.textContent = book.name;
+                    bookSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function createOrder() {
+        const orderNumber = document.getElementById('orderNumber').value;
+        const orderDate = document.getElementById('orderDate').value;
+        const deliveryTime = document.getElementById('deliveryTime').value;
+        const selectedBooks = Array.from(document.getElementById('orderBooks').selectedOptions);
+
+        const studentId = document.getElementById('orderStudent').value;
+
+        console.log('Sending request to backend...');
+        console.log("Order Date:", orderDate);
+        console.log("Delivery Time:", deliveryTime);
+
+        for (let book of selectedBooks) {
+            let stockCount = book.getAttribute('data-stock');
+            if (parseInt(stockCount) <= 0) {
+                alert(`"${book.textContent}" book run out!`);
+                return;
+            }
+        }
+
+        const bookIds = selectedBooks.map(option => option.value).join(',');
+
+        fetch(`/order/save/${bookIds}/${studentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderNumber: orderNumber,
+                localDate: orderDate,
+                deliveryTime: deliveryTime
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Error: ${response.status} - ${text}`);
+                    });
+                }
+                return response.json().catch(() => null);
+            })
+            .then(responseData => {
+                if (responseData) {
+                    console.log('Order created:', responseData);
+                    $('#orderModal').modal('hide');
+                    alert('Order created!');
+                    location.reload();
+                } else {
+                    console.warn('No JSON response received from server!');
+                    alert('Order created, but no server response received!');
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+                alert(`Error occurred: ${error.message}`);
+            });
+    }
+
+
+    function editOrder(orderId) {
+        const orderNumber = document.getElementById('orderNumber').value;
+        const orderDate = document.getElementById('orderDate').value;
+        const deliveryTime = document.getElementById('deliveryTime').value;
+        const selectedBooks = Array.from(document.getElementById('orderBooks').selectedOptions)
+            .map(option => option.value)
+            .join(',');
+        const studentId = document.getElementById('orderStudent').value;
+
+        const formData = new FormData();
+        formData.append("orderNumber", orderNumber)
+        formData.append("localDate", orderDate)
+        formData.append("deliveryDate", deliveryTime)
+        formData.append("bookIds", selectedBooks)
+        formData.append("studentId", studentId)
+
+        console.log('Sending update request to backend...');
+
+        fetch(`/order/update/${orderId}`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Order updated:', response);
+                    $('#orderModal').modal('hide');
+                    alert('Order updated!');
+                    location.reload();
+                } else {
+                    console.error('Order does not edited!');
+                    alert('An error occurred! Order does not edited!');
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function deleteOrder(orderId) {
+        fetch(`/order/delete/${orderId}`, {
+                method: 'DELETE'
+            }
+        )
+            .then(response => {
+                if (response.ok) {
+                    console.log('Order deleted!');
+                    $('#orderModal').modal('hide');
+                    alert('Order deleted!');
+                    location.reload();
+                } else {
+                    console.error('Order does not deleted!');
+                    alert('An error occurred! Order does not deleted!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
+    }
+
+    function returnOrder() {
+        const orderNumber = document.getElementById('orderNumber').value;
+        const deliveryTime = document.getElementById('deliveryTime').value;
+
+        fetch(`/order/return/${orderNumber}/${deliveryTime}`, {
+                method: 'POST'
+            }
+        )
+            .then(response => {
+                if (response.ok) {
+                    console.log('Book delivered!');
+                    $('#orderModal').modal('hide');
+                    alert('Book delivered!');
+                    location.reload();
+                } else {
+                    console.error('Order does not delivered!');
+                    alert('An error occurred! Book does not delivered!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
+    }
+
+    function openModal(action, orderId = null) {
+        const modalTitle = document.getElementById('orderModalLabel');
+        const orderNumberInput = document.getElementById('orderNumber');
+        const orderDateInput = document.getElementById('orderDate');
+        const deliveryTimeInput = document.getElementById('deliveryTime');
+        const orderBooksSelect = document.getElementById('orderBooks');
+        const orderStudentSelect = document.getElementById('orderStudent');
+        const orderIdInput = document.getElementById('orderId');
+        const deleteWarning = document.getElementById('deleteWarning');
+        const modalActionBtn = document.getElementById('modalActionBtn');
+
+        const orderNumberLabel = document.getElementById('orderNumberLabel');
+        const orderDateLabel = document.getElementById('orderDateLabel');
+        const deliveryTimeLabel = document.getElementById('deliveryTimeLabel');
+        const orderBooksLabel = document.getElementById('orderBooksLabel');
+        const orderStudentLabel = document.getElementById('orderStudentLabel');
+
+        orderNumberInput.value = '';
+        orderDateInput.value = '';
+        deliveryTimeInput.value = '';
+        orderBooksSelect.innerHTML = '';
+        orderStudentSelect.innerHTML = '';
+        orderIdInput.value = orderId;
+        deleteWarning.style.display = 'none';
+
+        orderNumberLabel.style.display = 'block';
+        orderDateLabel.style.display = 'block';
+        deliveryTimeLabel.style.display = 'block';
+        orderBooksLabel.style.display = 'block';
+        orderStudentLabel.style.display = 'block';
+
+        const newBtn = modalActionBtn.cloneNode(true);
+        modalActionBtn.parentNode.replaceChild(newBtn, modalActionBtn);
+
+        if (action === 'create') {
+            modalTitle.textContent = 'Create New Order';
+            newBtn.textContent = 'Create';
+            newBtn.className = 'btn btn-success';
+            newBtn.onclick = () => createOrder();
+        } else if (action === 'edit' && orderId) {
+            modalTitle.textContent = 'Edit Order';
+            newBtn.textContent = 'Edit';
+            newBtn.className = 'btn btn-primary';
+            newBtn.onclick = () => editOrder(orderId);
+
+            fetch(`/order/getById/${orderId}`)
+                .then(response => response.json())
+                .then(data => {
+                    orderNumberInput.value = data.orderNumber;
+                    orderDateInput.value = data.localDate;
+                    deliveryTimeInput.value = data.deliveryTime;
+                    loadBooks(data.books);
+                    fetchStudents;
+                })
+                .catch(error => console.error('Error:', error));
+        } else if (action === 'return') {
+            modalTitle.textContent = 'Return Book Order';
+            newBtn.textContent = 'Return';
+            newBtn.className = 'btn btn-warning';
+            newBtn.onclick = () => returnOrder();
+
+            orderNumberLabel.style.display = 'block';
+            deliveryTimeLabel.style.display = 'block';
+
+            orderDateLabel.style.display = 'none';
+            orderBooksLabel.style.display = 'none';
+            orderStudentLabel.style.display = 'none';
+
+            orderDateInput.style.display = 'none';
+            orderBooksSelect.style.display = 'none';
+            orderStudentSelect.style.display = 'none';
+        } else if (action === 'delete' && orderId) {
+            modalTitle.textContent = 'Delete Order';
+            newBtn.textContent = 'Delete';
+            newBtn.className = 'btn btn-danger';
+            deleteWarning.style.display = 'block';
+            newBtn.onclick = () => deleteOrder(orderId);
+
+            orderNumberLabel.style.display = 'none';
+            orderDateLabel.style.display = 'none';
+            deliveryTimeLabel.style.display = 'none';
+            orderBooksLabel.style.display = 'none';
+            orderStudentLabel.style.display = 'none';
+
+            orderNumberInput.style.display = 'none';
+            orderDateInput.style.display = 'none';
+            deliveryTimeInput.style.display = 'none';
+            orderBooksSelect.style.display = 'none';
+            orderStudentSelect.style.display = 'none';
+        }
+
+        fetchBooks();
+        fetchStudents();
+
+        const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+        orderModal.show();
+    }
+
+</script>
 </body>
 </html>

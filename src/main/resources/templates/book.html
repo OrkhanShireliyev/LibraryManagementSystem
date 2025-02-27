@@ -187,59 +187,59 @@
                 <form id="bookForm">
                     <input type="hidden" id="bookId"/>
                     <div class="mb-3">
-                        <label for="bookName" class="form-label">Name</label>
+                        <label id="bookNameLabel" for="bookName" class="form-label">Name</label>
                         <input type="text" class="form-control" id="bookName" required placeholder="Enter name...">
                     </div>
                     <div class="mb-3">
-                        <label for="bookIsbn" class="form-label">ISBN</label>
+                        <label id="bookIsbnLabel" for="bookIsbn" class="form-label">ISBN</label>
                         <input type="text" class="form-control" id="bookIsbn" required placeholder="Enter ISBN...">
                     </div>
                     <div class="mb-3">
-                        <label for="bookPublishedYear" class="form-label">Published Year</label>
+                        <label id="bookYearLabel" for="bookPublishedYear" class="form-label">Published Year</label>
                         <input type="text" class="form-control" id="bookPublishedYear" required
                                placeholder="Enter published year...">
                     </div>
                     <div class="mb-3">
-                        <label for="bookImage" class="form-label">Picture</label>
+                        <label id="bookPictureLabel" for="bookImage" class="form-label">Picture</label>
                         <input type="file" class="form-control" id="bookImage" placeholder="Choose picture...">
                     </div>
                     <div class="mb-3">
-                        <label for="bookStockCount" class="form-label">Stock</label>
+                        <label id="bookStockLabel" for="bookStockCount" class="form-label">Stock</label>
                         <input type="number" class="form-control" id="bookStockCount" required
                                placeholder="Enter stock count...">
                     </div>
                     <div class="mb-3">
-                        <label for="bookAuthors" class="form-label">Authors</label>
+                        <label id="bookAuthorsLabel" for="bookAuthors" class="form-label">Authors</label>
                         <select class="form-control" id="bookAuthors" multiple required placeholder="Choose authors...">
 
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="bookCategory" class="form-label">Category</label>
+                        <label id="bookCategoryLabel" for="bookCategory" class="form-label">Category</label>
                         <select class="form-control" id="bookCategory" required placeholder="Choose category...">
 
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="bookStudents" class="form-label">Students</label>
-                        <select class="form-control" id="bookStudents" multiple required
-                                placeholder="Choose students...">
+                        <label id="bookStudentsLabel" for="bookStudents" class="form-label">Students</label>
+                        <select class="form-control" id="bookStudents" multiple required placeholder="Choose students...">
 
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="bookOrder" class="form-label">Orders</label>
-                        <select class="form-control" id="bookOrder" required placeholder="Choose order...">
+                        <label id="bookOrdersLabel" for="bookOrder" class="form-label">Orders</label>
+                        <select class="form-control" id="bookOrder" multiple required placeholder="Choose order...">
                             <option value="">Choose</option>
                         </select>
                     </div>
                     <div class="mb-3" id="deleteWarning" style="display: none; color: navy;">
-                        <p>Are you sure you want to delete this writer?</p>
+                        <p>Are you sure you want to delete this book?</p>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" id="closeModalBtn" data-bs-dismiss="modal">Close
+                </button>
                 <button type="button" class="btn btn-danger" id="modalActionBtn">Confirm</button>
             </div>
         </div>
@@ -250,6 +250,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+    document.getElementById("closeModalBtn").addEventListener("click", function () {
+        let modal = bootstrap.Modal.getInstance(document.getElementById('bookModal'));
+        modal.hide();
+        location.reload();
+    });
     document.addEventListener("DOMContentLoaded", function () {
         fetchBooks();
     });
@@ -283,12 +288,14 @@
                     <td class="book-category">${book.category ? book.category.name : 'Not found category'}</td>
                     <td class="book-students">
                         ${book.students && book.students.length > 0
-                        ? book.students.map(student => student.name).join(', ')
+                        ? book.students.map(student => student.name + ' ' + student.surname).join(', ')
                         : 'Not found student'}
                     </td>
 
                     <td class="book-order">
-                        ${book.order ? book.order.orderNumber : 'Not found order'}
+                    ${book.orders && book.orders.length > 0
+                        ? book.orders.map(order => order.orderNumber).join(', ')
+                        : 'Not found orders'}
                     </td>
                     <td class="action-btns">
                         <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal"
@@ -322,9 +329,11 @@
             const bookAuthors = row.querySelector('.book-authors').textContent.toLowerCase();
             const bookCategory = row.querySelector('.book-category').textContent.toLowerCase();
             const bookStudents = row.querySelector('.book-students').textContent.toLowerCase();
+            const bookOrders= row.querySelector('.book-order').textContent.toLowerCase();
 
             if (bookName.includes(searchInput) || bookIsbn.includes(searchInput) || bookPublishedYear.includes(searchInput) ||
-                bookAuthors.includes(searchInput) || bookCategory.includes(searchInput) || bookStudents.includes(searchInput)) {
+                bookAuthors.includes(searchInput) || bookCategory.includes(searchInput) || bookStudents.includes(searchInput) ||
+                bookOrders.includes(searchInput)) {
                 row.style.display = '';
                 visibleCount++;
                 highlightText(row, searchInput);
@@ -462,7 +471,7 @@
         const authors = Array.from(document.getElementById('bookAuthors').selectedOptions).map(option => option.value);
         const category = document.getElementById('bookCategory').value;
         const students = Array.from(document.getElementById('bookStudents').selectedOptions).map(option => option.value);
-        const order = document.getElementById('bookOrder').value;
+        const order = Array.from(document.getElementById('bookOrder').selectedOptions).map(option => option.value);
 
         const formData = new FormData();
         formData.append('name', name);
@@ -473,7 +482,7 @@
         formData.append('authors', authors.join(','));
         formData.append('category', category);
         formData.append('students', students.join(','));
-        formData.append('order', order);
+        formData.append('order', order.join(','));
 
         console.log('Sending request to backend...');
 
@@ -515,7 +524,7 @@
         const authors = Array.from(document.getElementById('bookAuthors').selectedOptions).map(option => option.value);
         const category = document.getElementById('bookCategory').value;
         const students = Array.from(document.getElementById('bookStudents').selectedOptions).map(option => option.value);
-        const order = document.getElementById('bookOrder').value;
+        const orders = Array.from(document.getElementById('bookOrder').selectedOptions).map(option=>option.value);
 
         const formData = new FormData();
         formData.append('name', name);
@@ -528,7 +537,7 @@
         formData.append('authors', authors.join(','));
         formData.append('category', category);
         formData.append('students', students.join(','));
-        formData.append('order', order);
+        formData.append('order', orders);
 
         console.log('Sending update request to backend...');
 
@@ -545,6 +554,7 @@
                 } else {
                     console.error('Could not update the book!');
                     alert('An error occurred! Book does not updated!');
+                    location.reload();
                 }
             })
             .catch(error => {
@@ -565,6 +575,7 @@
                 } else {
                     console.error('Could not delete book!');
                     alert('An error occurred! The book could not be deleted!');
+                    location.reload();
                 }
             })
             .catch(error => {
@@ -572,49 +583,169 @@
             });
     }
 
-    function openModal(action, bookId) {
-        console.log(`Action: ${action}, Book ID: ${bookId}`);
+    function openModal(action, bookId = null) {
         const modalTitle = document.getElementById('bookModalLabel');
-        const modalActionBtn = document.getElementById('modalActionBtn');
+        const bookNameInput = document.getElementById('bookName');
+        const bookIsbnInput = document.getElementById('bookIsbn');
+        const bookYearInput = document.getElementById('bookPublishedYear');
+        const bookPictureInput = document.getElementById('bookImage');
+        const bookStockInput = document.getElementById('bookStockCount');
+        const bookAuthorsSelect = document.getElementById('bookAuthors');
+        const bookCategorySelect = document.getElementById('bookCategory');
+        const bookStudentsSelect = document.getElementById('bookStudents');
+        const bookOrdersSelect = document.getElementById('bookOrder');
+        const bookIdInput = document.getElementById('bookId');
         const deleteWarning = document.getElementById('deleteWarning');
+        const modalActionBtn = document.getElementById('modalActionBtn');
 
-        document.getElementById('bookForm').reset();
+        const bookNameLabel = document.getElementById('bookNameLabel');
+        const bookIsbnLabel = document.getElementById('bookIsbnLabel');
+        const bookYearLabel = document.getElementById('bookYearLabel');
+        const bookPictureLabel = document.getElementById('bookPictureLabel');
+        const bookStockLabel = document.getElementById('bookStockLabel');
+        const bookAuthorsLabel = document.getElementById('bookAuthorsLabel');
+        const bookCategoryLabel = document.getElementById('bookCategoryLabel');
+        const bookStudentsLabel = document.getElementById('bookStudentsLabel');
+        const bookOrdersLabel = document.getElementById('bookOrdersLabel');
+
+        bookNameInput.value = '';
+        bookIsbnInput.value = '';
+        bookYearInput.value = '';
+        bookPictureInput.value = '';
+        bookStockInput.value = '';
+        bookAuthorsSelect.innerHTML = '';
+        bookCategorySelect.innerHTML = '';
+        bookStudentsSelect.innerHTML = '';
+        bookOrdersSelect.innerHTML = '';
+        bookIdInput.value = bookId;
+        deleteWarning.style.display = 'none';
+
+        bookNameInput.style.display = 'block';
+        bookIsbnInput.style.display = 'block';
+        bookYearInput.style.display = 'block';
+        bookPictureInput.style.display = 'block';
+        bookStockInput.style.display = 'block';
+        bookAuthorsSelect.style.display = 'block';
+        bookCategorySelect.style.display = 'block';
+        bookStudentsSelect.style.display = 'block';
+        bookOrdersSelect.style.display = 'block';
+        bookNameLabel.style.display = 'block';
+        bookIsbnLabel.style.display = 'block';
+        bookYearLabel.style.display = 'block';
+        bookPictureLabel.style.display = 'block';
+        bookStockLabel.style.display = 'block';
+        bookAuthorsLabel.style.display = 'block';
+        bookCategoryLabel.style.display = 'block';
+        bookStudentsLabel.style.display = 'block';
+        bookOrdersLabel.style.display = 'block';
 
         const newBtn = modalActionBtn.cloneNode(true);
         modalActionBtn.parentNode.replaceChild(newBtn, modalActionBtn);
 
-        newBtn.addEventListener('click', () => {
-            if (action === 'create') {
-                console.log('Creating a new book...');
-                createBook();
-            } else if (action === 'edit') {
-                console.log(`Editing book: ID=${bookId}`);
-                editBook(bookId);
-            } else if (action === 'delete') {
-                console.log(`Deleting book: ID=${bookId}`);
-                deleteBook(bookId);
-            }
-        });
-
         if (action === 'create') {
             modalTitle.textContent = 'Create Book';
             newBtn.textContent = 'Create';
-            deleteWarning.style.display = 'none';
-        } else if (action === 'edit') {
+            newBtn.className = 'btn btn-success';
+            newBtn.onclick = () => createBook();
+        } else if (action === 'edit' && bookId) {
             modalTitle.textContent = 'Edit Book';
             newBtn.textContent = 'Edit';
-            deleteWarning.style.display = 'none';
-            console.log(bookId);
-            document.getElementById('bookId').value = bookId;
-        } else if (action === 'delete') {
+            newBtn.className = 'btn btn-primary';
+            newBtn.onclick = () => editBook(bookId);
+
+            fetch(`/book/getById/${bookId}`)
+                .then(response => response.json())
+                .then(data => {
+                    bookNameInput.value = data.name;
+                    bookIsbnInput.value = data.isbn;
+                    bookYearInput.value = data.publishedYear;
+                    bookStockInput.value = data.stockCount;
+                    bookPictureInput.value = data.image;
+                    loadAuthors(data.authors);
+                    loadCategories(data.category);
+                    loadStudents(data.students);
+                    loadOrders(data.orders);
+                })
+                .catch(error => console.error('Error:', error));
+        } else if (action === 'delete' && bookId) {
             modalTitle.textContent = 'Delete Book';
             newBtn.textContent = 'Delete';
+            newBtn.className = 'btn btn-danger';
             deleteWarning.style.display = 'block';
-            console.log(bookId);
-            document.getElementById('bookId').value = bookId;
+            newBtn.onclick = () => deleteBook(bookId);
+
+            bookNameInput.style.display = 'none';
+            bookIsbnInput.style.display = 'none';
+            bookYearInput.style.display = 'none';
+            bookPictureInput.style.display = 'none';
+            bookStockInput.style.display = 'none';
+            bookAuthorsSelect.style.display = 'none';
+            bookCategorySelect.style.display = 'none';
+            bookStudentsSelect.style.display = 'none';
+            bookOrdersSelect.style.display = 'none';
+            bookNameLabel.style.display = 'none';
+            bookIsbnLabel.style.display = 'none';
+            bookYearLabel.style.display = 'none';
+            bookPictureLabel.style.display = 'none';
+            bookStockLabel.style.display = 'none';
+            bookAuthorsLabel.style.display = 'none';
+            bookCategoryLabel.style.display = 'none';
+            bookStudentsLabel.style.display = 'none';
+            bookOrdersLabel.style.display = 'none';
         }
-        $('#bookModal').modal('show');
+
+        fetch('/author/authors')
+            .then(response => response.json())
+            .then(authors => {
+                authors.forEach(author => {
+                    const option = document.createElement('option');
+                    option.value = author.id;
+                    option.textContent = author.name;
+                    bookAuthorsSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+        fetch('/category/categories')
+            .then(response => response.json())
+            .then(categories => {
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    bookCategorySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+        fetch('/student/students')
+            .then(response => response.json())
+            .then(students => {
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = student.name;
+                    bookStudentsSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+        fetch('/order/orders')
+            .then(response => response.json())
+            .then(orders => {
+                orders.forEach(order => {
+                    const option = document.createElement('option');
+                    option.value = order.id;
+                    option.textContent = `Order #${order.id}`;
+                    bookOrdersSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+        const bookModal = new bootstrap.Modal(document.getElementById('bookModal'));
+        bookModal.show();
     }
+
 </script>
 </body>
 </html>

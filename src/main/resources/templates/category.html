@@ -1,262 +1,503 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kateqoriyalar - Admin Panel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f3f4f6;
-      font-family: 'Poppins', sans-serif;
-    }
-    .card {
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-      transition: all 0.4s ease-in-out;
-    }
-    .card:hover {
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      transform: translateY(-10px);
-    }
-    .card-header {
-      background: linear-gradient(90deg, #6a11cb, #2575fc);
-      color: white;
-      border-radius: 15px 15px 0 0;
-      padding: 25px;
-      font-size: 1.8rem;
-      font-weight: 600;
-      text-align: center;
-    }
-    .card-body {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 0 0 15px 15px;
-    }
-    .table-striped tbody tr:nth-of-type(odd) {
-      background-color: #f9f9f9;
-    }
-    .table-hover tbody tr:hover {
-      background-color: #e9ecef;
-      cursor: pointer;
-    }
-    .btn-custom {
-      background: linear-gradient(90deg, #6a11cb, #2575fc);
-      color: white;
-      border-radius: 50px;
-      padding: 10px 25px;
-      transition: all 0.3s ease;
-    }
-    .btn-custom:hover {
-      background: linear-gradient(90deg, #2575fc, #6a11cb);
-      transform: translateY(-5px);
-    }
-    .btn-danger-custom {
-      background-color: #dc3545;
-      color: white;
-      border-radius: 50px;
-      padding: 10px 25px;
-      transition: all 0.3s ease;
-    }
-    .btn-danger-custom:hover {
-      background-color: #c82333;
-      transform: translateY(-5px);
-    }
-    .btn-warning-custom {
-      background-color: #ffc107;
-      color: white;
-      border-radius: 50px;
-      padding: 10px 25px;
-      transition: all 0.3s ease;
-    }
-    .btn-warning-custom:hover {
-      background-color: #e0a800;
-      transform: translateY(-5px);
-    }
-    .table th, .table td {
-      vertical-align: middle;
-    }
-    .search-bar {
-      margin-bottom: 20px;
-      border-radius: 50px;
-    }
-    .card-footer {
-      background-color: #f9f9f9;
-      border-radius: 0 0 15px 15px;
-      padding: 20px;
-      text-align: center;
-      font-size: 1rem;
-      color: #888;
-    }
-    .action-btns {
-      display: flex;
-      gap: 10px;
-    }
-    .action-btns a {
-      transition: transform 0.3s ease;
-    }
-    .action-btns a:hover {
-      transform: scale(1.1);
-    }
-    .highlight {
-      background-color: yellow;
-      color: black;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px);
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #e9ecef;
+            cursor: pointer;
+        }
+
+        .btn-custom {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            transform: translateY(-5px);
+        }
+
+        .btn-danger-custom {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger-custom:hover {
+            background-color: #c82333;
+            transform: translateY(-5px);
+        }
+
+        .btn-warning-custom {
+            background-color: #ffc107;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #e0a800;
+            transform: translateY(-5px);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            border-radius: 50px;
+        }
+
+        .card-footer {
+            background-color: #f9f9f9;
+            border-radius: 0 0 15px 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btns a {
+            transition: transform 0.3s ease;
+        }
+
+        .action-btns a:hover {
+            transform: scale(1.1);
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container mt-5">
-  <div class="card">
-    <div class="card-header">
-      Kateqoriyalar Siyahısı
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-6">
-          <a href="javascript:void(0);" class="btn btn-custom mb-3" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openModal('create')"><i class="fas fa-plus"></i> Yeni Kateqoriya Yarat</a>
+    <div class="card">
+        <div class="card-header">
+            Category List
         </div>
-        <div class="col-md-6 text-end">
-          <input type="text" class="form-control search-bar" id="searchInput" placeholder="Axtarış edin..." aria-label="Search">
-        </div>
-      </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="javascript:void(0);" class="btn btn-custom mb-3" data-bs-toggle="modal"
+                       data-bs-target="#categoryModal" onclick="openModal('create')">
+                        <i class="fas fa-plus"></i> Create New Category</a>
+                </div>
+                <div class="col-md-6 text-end">
+                    <input type="text" class="form-control search-bar" id="searchInput" placeholder="Search..."
+                           aria-label="Search">
+                </div>
+            </div>
 
-      <table class="table table-striped table-hover">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Ad</th>
-          <th>Kitablar</th>
-          <th>Əməliyyatlar</th>
-        </tr>
-        </thead>
-        <tbody id="categoryList">
-        <tr>
-          <td>1</td>
-          <td class="category-name">Kateqoriya 1</td>
-          <td class="category-books">Kitab 1, Kitab 2</td>
-          <td class="action-btns">
-            <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openModal('edit', 1)"><i class="fas fa-edit"></i> Redaktə et</a>
-            <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openModal('delete', 1)"><i class="fas fa-trash-alt"></i> Sil</a>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td class="category-name">Kateqoriya 2</td>
-          <td class="category-books">Kitab 3</td>
-          <td class="action-btns">
-            <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openModal('edit', 2)"><i class="fas fa-edit"></i> Redaktə et</a>
-            <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openModal('delete', 2)"><i class="fas fa-trash-alt"></i> Sil</a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Name</th>
+                    <th>Books</th>
+                    <th>Operations</th>
+                </tr>
+                </thead>
+                <tbody id="categoryList">
+                <tr>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <p class="mb-0" id="totalCategories">2 categories available</p>
+        </div>
     </div>
-    <div class="card-footer">
-      <p class="mb-0" id="totalCategories">Toplam 2 kateqoriya mövcuddur</p>
-    </div>
-  </div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="categoryModalLabel">Kateqoriya Əməliyyatı</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="categoryForm">
-          <div class="mb-3">
-            <label for="categoryName" class="form-label">Ad</label>
-            <input type="text" class="form-control" id="categoryName" required>
-          </div>
-          <div class="mb-3">
-            <label for="categoryBooks" class="form-label">Kitablar</label>
-            <select multiple class="form-control" id="categoryBooks">
-              <option value="1">Kitab 1</option>
-              <option value="2">Kitab 2</option>
-              <option value="3">Kitab 3</option>
-            </select>
-          </div>
-          <div class="mb-3" id="deleteWarning" style="display: none;">
-            <p>Bu kateqoriyanı silmək istədiyinizə əminsiniz?</p>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bağla</button>
-        <button type="button" class="btn btn-danger" id="modalActionBtn">Əməliyyatı İcra Et</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryModalLabel">Category Operation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId" name="categoryId">
+                    <div class="mb-3" id="categoryNameContainer">
+                        <label id="categoryNameLabel" for="categoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName" required placeholder="Enter name...">
+                    </div>
+                    <div class="mb-3" id="categoryBooksContainer">
+                        <label id="categoryBooksLabel" for="categoryBooks" class="form-label">Books</label>
+                        <select multiple class="form-control" id="categoryBooks">
+                        </select>
+                    </div>
+                    <div class="mb-3" id="deleteWarning" style="display: none;">
+                        <p>Are you sure you want to delete this category?</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeModalBtn">Close</button>
+                <button type="button" class="btn btn-danger" id="modalActionBtn">Confirm</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
 
 <!-- Bootstrap və FontAwesome scriptləri -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-  document.getElementById('searchInput').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#categoryList tr');
-    let totalCategories = 0;
-
-    rows.forEach(row => {
-      const nameCell = row.querySelector('.category-name');
-      const booksCell = row.querySelector('.category-books');
-
-      const nameText = nameCell.textContent.toLowerCase();
-      const booksText = booksCell.textContent.toLowerCase();
-
-      if (nameText.includes(searchTerm) || booksText.includes(searchTerm)) {
-        row.style.display = '';
-        totalCategories++;
-
-        highlightText(nameCell, searchTerm);
-        highlightText(booksCell, searchTerm);
-      } else {
-        row.style.display = 'none';
-        removeHighlight(nameCell);
-        removeHighlight(booksCell);
-      }
+    document.getElementById("closeModalBtn").addEventListener("click", function () {
+        let modal = bootstrap.Modal.getInstance(document.getElementById('categoryModal'));
+        modal.hide();
+        location.reload();
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchCategory();
+        fetchBooks();
     });
 
-    document.getElementById('totalCategories').textContent = `Toplam ${totalCategories} kateqoriya mövcuddur`;
-  });
+    function fetchCategory() {
+        fetch('/category/categories')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(categories => {
+                console.log(categories);
+                const categoryList = document.getElementById('categoryList');
+                const totalCategories = document.getElementById('totalCategories');
+                if (!categoryList || !totalCategories) {
+                    console.error("Not found categories!");
+                    return;
+                }
 
-  function highlightText(element, searchTerm) {
-    const text = element.textContent;
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
-    const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
-    element.innerHTML = highlightedText;
-  }
+                categoryList.innerHTML = '';
 
-  function removeHighlight(element) {
-    element.innerHTML = element.textContent;
-  }
+                categories.forEach((category, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td style="display: none">${category.id}</td>
+                    <td class="category-index">${index + 1}</td>
+                    <td class="category-name">${category.name}</td>
+                    <td class="category-books">
+                        ${category.books && category.books.length > 0
+                        ? category.books.map(book => book.name).join(', ')
+                        : 'Not found books!'}
+                    </td>
+                    <td class="action-btns">
+                        <a href="javascript:void(0);" class="btn btn-warning-custom btn-sm" data-bs-toggle="modal"
+                           data-bs-target="#categoryModal" onclick="openModal('edit', ${category.id})">
+                           <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-danger-custom btn-sm" data-bs-toggle="modal"
+                           data-bs-target="#categoryModal" onclick="openModal('delete', ${category.id})">
+                           <i class="fas fa-trash-alt"></i> Delete
+                        </a>
+                    </td>
+                `;
+                    categoryList.appendChild(row);
+                });
 
-  function openModal(action, categoryId) {
-    const modalTitle = document.getElementById('categoryModalLabel');
-    const modalActionBtn = document.getElementById('modalActionBtn');
-    const deleteWarning = document.getElementById('deleteWarning');
-
-    if (action === 'create') {
-      modalTitle.textContent = 'Yeni Kateqoriya Yarat';
-      modalActionBtn.textContent = 'Yarat';
-      deleteWarning.style.display = 'none';
-    } else if (action === 'edit') {
-      modalTitle.textContent = 'Kateqoriyanı Redaktə Et';
-      modalActionBtn.textContent = 'Redaktə et';
-      deleteWarning.style.display = 'none';
-    } else if (action === 'delete') {
-      modalTitle.textContent = 'Kateqoriyanı Sil';
-      modalActionBtn.textContent = 'Sil';
-      deleteWarning.style.display = 'block';
+                totalCategories.textContent = `Total ${categories.length} categories available`;
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
     }
-  }
+
+    function fetchBooks() {
+        fetch('/book/books')
+            .then(response => response.json())
+            .then(books => {
+                const categoryBooksSelect = document.getElementById('categoryBooks');
+                categoryBooksSelect.innerHTML = '';
+
+                books.forEach(book => {
+                    const option = document.createElement('option');
+                    option.value = book.id;
+                    option.textContent = book.name;
+                    categoryBooksSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#categoryList tr');
+        let totalCategories = 0;
+
+        rows.forEach(row => {
+            const nameCell = row.querySelector('.category-name');
+            const booksCell = row.querySelector('.category-books');
+
+            const nameText = nameCell.textContent.toLowerCase();
+            const booksText = booksCell.textContent.toLowerCase();
+
+            if (nameText.includes(searchTerm) || booksText.includes(searchTerm)) {
+                row.style.display = '';
+                totalCategories++;
+
+                highlightText(nameCell, searchTerm);
+                highlightText(booksCell, searchTerm);
+            } else {
+                row.style.display = 'none';
+                removeHighlight(nameCell);
+                removeHighlight(booksCell);
+            }
+        });
+
+        document.getElementById('totalCategories').textContent = `Total ${totalCategories} categories available`;
+    });
+
+    function highlightText(element, searchTerm) {
+        const text = element.textContent;
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+        element.innerHTML = highlightedText;
+    }
+
+    function removeHighlight(element) {
+        element.innerHTML = element.textContent;
+    }
+
+    function createCategory() {
+        const categoryName = document.getElementById('categoryName').value;
+        const categoryBooksSelect = document.getElementById('categoryBooks');
+        const selectedBooks = Array.from(categoryBooksSelect.selectedOptions)
+            .map(option => option.value)
+            .join(',');
+
+        const categoryData = {
+            name: categoryName,
+            books: []
+        };
+
+        fetch(`/category/save/${selectedBooks}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(categoryData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Category created:', data);
+                $('#categoryModal').modal('hide');
+                alert('Category created!');
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+            });
+    }
+
+    function editCategory(categoryId) {
+        const name = document.getElementById('categoryName').value;
+        const selectedBooks = Array.from(document.getElementById('categoryBooks').selectedOptions)
+            .map(option => option.value)
+            .join(',');
+
+        const categoryData = {
+            name: categoryName,
+            books: []
+        };
+
+        fetch(`/category/update/${categoryId}/${name}/${selectedBooks}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(categoryData)
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Category not updated!');
+                return response.json();
+            })
+            .then(data => {
+                console.log('Category updated:', data);
+                $('#categoryModal').modal('hide');
+                alert('Category updated!');
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Xəta:', error);
+                alert('Category not updated!');
+                $('#categoryModal').modal('hide');
+                location.reload();
+            });
+    }
+
+    function deleteCategory(categoryId) {
+        if (!categoryId) {
+            console.error('Category ID not found!');
+            return;
+        }
+
+        console.log(`Deleting category: ID=${categoryId}`);
+
+        fetch(`/category/delete/${categoryId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Category not deleted');
+                    });
+                }
+                return response.text();
+            })
+            .then(() => {
+                console.log('Category deleted!');
+                $('#categoryModal').modal('hide');
+                alert('Category deleted!');
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`Error happened: ${error.message}`);
+                $('#categoryModal').modal('hide');
+                location.reload();
+            });
+    }
+
+    function openModal(action, categoryId = null) {
+        const modalTitle = document.getElementById('categoryModalLabel');
+        const categoryNameInput = document.getElementById('categoryName');
+        const categoryBooksSelect = document.getElementById('categoryBooks');
+        const categoryIdInput = document.getElementById('categoryId');
+        const deleteWarning = document.getElementById('deleteWarning');
+        const modalActionBtn = document.getElementById('modalActionBtn');
+
+        const categoryNameLabel = document.getElementById('categoryNameLabel');
+        const categoryBooksLabel = document.getElementById('categoryBooksLabel');
+
+        categoryNameInput.value = '';
+        categoryBooksSelect.innerHTML = '';
+        categoryIdInput.value = categoryId;
+        deleteWarning.style.display = 'none';
+
+        categoryNameInput.style.display = 'block';
+        categoryBooksSelect.style.display = 'block';
+        categoryNameLabel.style.display = 'block';
+        categoryBooksLabel.style.display = 'block';
+
+        const newBtn = modalActionBtn.cloneNode(true);
+        modalActionBtn.parentNode.replaceChild(newBtn, modalActionBtn);
+
+        if (action === 'create') {
+            modalTitle.textContent = 'Create New Category';
+            newBtn.textContent = 'Create';
+            newBtn.className = 'btn btn-success';
+            newBtn.onclick = () => createCategory();
+        } else if (action === 'edit' && categoryId) {
+            modalTitle.textContent = 'Edit Category';
+            newBtn.textContent = 'Edit';
+            newBtn.className = 'btn btn-primary';
+            newBtn.onclick = () => editCategory(categoryId);
+
+            fetch(`/category/getById/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    categoryNameInput.value = data.name;
+                    loadBooks(data.books);
+                })
+                .catch(error => console.error('Error:', error));
+        } else if (action === 'delete' && categoryId) {
+            modalTitle.textContent = 'Delete Category';
+            newBtn.textContent = 'Delete';
+            newBtn.className = 'btn btn-danger';
+            deleteWarning.style.display = 'block';
+            newBtn.onclick = () => deleteCategory(categoryId);
+
+            categoryNameInput.style.display = 'none';
+            categoryBooksSelect.style.display = 'none';
+            categoryNameLabel.style.display = 'none';
+            categoryBooksLabel.style.display = 'none';
+        }
+
+        fetch('/book/books')
+            .then(response => response.json())
+            .then(books => {
+                books.forEach(book => {
+                    const option = document.createElement('option');
+                    option.value = book.id;
+                    option.textContent = book.name;
+                    categoryBooksSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+        const categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
+        categoryModal.show();
+    }
+
 </script>
 </body>
 </html>
