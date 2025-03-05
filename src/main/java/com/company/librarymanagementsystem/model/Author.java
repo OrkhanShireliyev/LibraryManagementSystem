@@ -3,6 +3,8 @@ package com.company.librarymanagementsystem.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +21,12 @@ public class Author {
     private String name;
     private String surname;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "book_author",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToMany(mappedBy = "authors")
     @JsonIgnore
     private List<Book> books=new ArrayList<>();
 
     @Override
     public String toString() {
-        return "Author{name='" + name + "', surname='" + surname + "', books=" + books + "}";
+        return "Author{id='" +id+ "', name='" + name + "', surname='" + surname + "', books=" + books + "}";
     }
 }

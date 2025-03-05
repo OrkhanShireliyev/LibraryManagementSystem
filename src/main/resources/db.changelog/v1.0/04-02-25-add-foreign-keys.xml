@@ -22,20 +22,7 @@
     </changeSet>
 
     <!-- Book -> Orders -->
-    <changeSet id="8-2" author="Orkhan Shireliyev">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <foreignKeyConstraintExists schemaName="public" foreignKeyName="fk_book_order"/>
-            </not>
-        </preConditions>
-        <addForeignKeyConstraint
-                baseTableName="book"
-                baseColumnNames="orders_id"
-                constraintName="fk_book_order"
-                referencedTableName="orders"
-                referencedColumnNames="id"
-                onDelete="SET NULL"/>
-    </changeSet>
+
 
     <!-- Book_Author (Many-to-Many) -->
     <changeSet id="8-3" author="Orkhan Shireliyev">

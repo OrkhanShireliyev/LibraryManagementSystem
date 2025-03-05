@@ -1,6 +1,7 @@
 package com.company.librarymanagementsystem.service.impl;
 
 import com.company.librarymanagementsystem.dto.StudentDTO;
+import com.company.librarymanagementsystem.exception.NotFoundException;
 import com.company.librarymanagementsystem.mapper.StudentMapper;
 import com.company.librarymanagementsystem.model.Book;
 import com.company.librarymanagementsystem.model.Order;
@@ -34,110 +35,146 @@ public class StudentServiceImpl implements StudentServiceInter {
     private final OrderRepository orderRepository;
 
     @Override
-    public ResponseEntity<StudentRequest> save(StudentRequest studentRequest) {
-        try{
-          Student student=studentMapper.studentRequestToStudent(studentRequest);
-          studentRepository.save(student);
-          log.info("Successfully created{}",student);
-          return new ResponseEntity<>(studentRequest, HttpStatus.OK);
-         }catch (Exception e){
-          log.error("Error occurred when creating student!");
-          return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-       }
-    }
+    @Transactional
+    public ResponseEntity<StudentDTO> save(StudentRequest studentRequest, List<Long> bookIds, List<Long> orderIds) {
+        List<Book> books = bookRepository.findAllById(bookIds);
 
-    @Override
-    public ResponseEntity<Student> update(Long id,
-                                          String registryCode,
-                                          String name, String surname,
-                                          int age,
-                                          List<Long> bookId,
-                                          List<Long> orderId) {
-        Student student=studentRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("Not found student by id="+id));
-
-        List<Book> books=new ArrayList<>();
-        for (Long bookById:bookId){
-            Book findBookById=bookRepository.findById(bookById)
-                .orElseThrow(()->new NoSuchElementException("Not found book by id="+bookById));
-            if (findBookById==null){
-                throw new NoSuchElementException("Not found book by id="+bookById);
-            }
-            books.add(findBookById);
-        }
-
-        List<Order> orders=new ArrayList<>();
-        for (Long orderById: orderId){
-            Order findOrderById=orderRepository.findById(orderById)
-                    .orElseThrow(()->new NoSuchElementException("Not found order by id="+orderById));
-            orders.add(findOrderById);
-        }
+        List<Order> orders = orderRepository.findAllById(orderIds);
 
         try {
-            student.setRegistryCode(registryCode);
-            student.setName(name);
-            student.setSurname(surname);
-            student.setAge(age);
+            Student student = studentMapper.studentRequestToStudent(studentRequest);
+
+            for (Book book : books) {
+                book.getStudents().add(student);
+            }
+
+            for (Order order : orders) {
+                order.setStudent(student);
+            }
+
             student.setBooks(books);
             student.setOrders(orders);
             studentRepository.save(student);
-            log.info("Successfully updated{}",student);
-            return new ResponseEntity<>(student, HttpStatus.OK);
-        }catch (Exception e){
-            log.error("Error occurred when updating student!");
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            StudentDTO studentDTO=studentMapper.studentToStudentDTO(student);
+            log.info("Successfully created{}", student);
+            return new ResponseEntity<>(studentDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred when creating student!");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
+    @Transactional
+    public ResponseEntity<StudentDTO> update(Long id,
+                                             StudentRequest studentRequest,
+                                             List<Long> bookIds,
+                                             List<Long> orderIds) {
+
+        List<Book> books = bookRepository.findAllById(bookIds);
+
+        List<Order> orders = orderRepository.findAllById(orderIds);
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Not found student by id=" + id));
+
+        try {
+            for (Book book : student.getBooks()) {
+                book.getStudents().remove(student);
+            }
+            for (Order order : student.getOrders()) {
+                order.setStudent(null);
+            }
+
+            student.getBooks().clear();
+            student.getOrders().clear();
+
+            for (Book book : books) {
+                book.getStudents().add(student);
+            }
+
+            for (Order order : orders) {
+                order.setStudent(student);
+            }
+
+            student.setRegistryCode(studentRequest.getRegistryCode());
+            student.setName(studentRequest.getName());
+            student.setSurname(studentRequest.getSurname());
+            student.setAge(studentRequest.getAge());
+            student.setBooks(books);
+            student.setOrders(orders);
+            studentRepository.save(student);
+            bookRepository.saveAll(books);
+            orderRepository.saveAll(orders);
+
+            StudentDTO studentDTO = studentMapper.studentToStudentDTO(student);
+            log.info("Successfully updated {}", student);
+            return new ResponseEntity<>(studentDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred when updating student!");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    @Transactional
     public ResponseEntity<List<StudentDTO>> getAllStudent() {
-        List<Student> students=studentRepository.findAll();
-        if(students.isEmpty()){
+        List<Student> students = studentRepository.findAll();
+        if (students == null || students.isEmpty()) {
             throw new NoSuchElementException("Not found students!");
         }
 
-        List<StudentDTO> studentDTOS=new ArrayList<>();
-
-        try{
-            for(Student student: students){
-                StudentDTO studentDTO=studentMapper.studentToStudentDTO(student);
+        try {
+            List<StudentDTO> studentDTOS = new ArrayList<>();
+            for (Student student : students) {
+                StudentDTO studentDTO = studentMapper.studentToStudentDTO(student);
                 studentDTOS.add(studentDTO);
             }
-            log.info("Successfully retrieved{}",studentDTOS);
-            return new ResponseEntity<>(studentDTOS,HttpStatus.OK);
-        }catch (Exception e){
+            log.info("Successfully retrieved{}", studentDTOS);
+            return new ResponseEntity<>(studentDTOS, HttpStatus.OK);
+        } catch (Exception e) {
             log.error("Error occured while retrieving students!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
+    @Transactional
     public ResponseEntity<StudentDTO> getStudentById(Long id) {
-        Student student=studentRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("Not found student by id="+id));
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Not found student by id=" + id));
 
-        try{
-            StudentDTO studentDTO=studentMapper.studentToStudentDTO(student);
-            log.info("Successfully retrieved{}",studentDTO);
-            return new ResponseEntity<>(studentDTO,HttpStatus.OK);
-        }catch (Exception e){
-            log.error("Error occured while retrieving student by id="+id);
+        try {
+            StudentDTO studentDTO = studentMapper.studentToStudentDTO(student);
+            log.info("Successfully retrieved{}", studentDTO);
+            return new ResponseEntity<>(studentDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occured while retrieving student by id=" + id);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
+    @Transactional
     public ResponseEntity<String> delete(Long id) {
-        Student student=studentRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("Not found student by id="+id));
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Not found student by id=" + id));
+        try {
+            for (Book book : student.getBooks()) {
+                book.getStudents().remove(student);
+            }
+            for (Order order : student.getOrders()) {
+                order.setStudent(null);
+            }
+            student.getBooks().clear();
+            student.getOrders().clear();
 
-        try{
-            studentRepository.deleteById(id);
-            log.info("Successfully deleted{}",student);
-        return new ResponseEntity<>("Successfully deleted{"+student+"}",HttpStatus.OK);
-    }catch (Exception e){
-            log.error("Error occured while retrieving student by id="+id);
+            studentRepository.delete(student);
+            log.info("Successfully deleted {}", student);
+            return new ResponseEntity<>("Successfully deleted{" + student + "}", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occured while retrieving student by id=" + id);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-         }
+        }
     }
 }

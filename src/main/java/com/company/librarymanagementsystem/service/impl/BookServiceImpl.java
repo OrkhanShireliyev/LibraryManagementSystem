@@ -4,7 +4,6 @@ import com.company.librarymanagementsystem.dto.BookDTO;
 import com.company.librarymanagementsystem.mapper.BookMapper;
 import com.company.librarymanagementsystem.model.*;
 import com.company.librarymanagementsystem.repository.*;
-import com.company.librarymanagementsystem.request.BookRequest;
 import com.company.librarymanagementsystem.service.S3Service;
 import com.company.librarymanagementsystem.service.inter.BookServiceInter;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,37 +50,41 @@ public class BookServiceImpl implements BookServiceInter {
                                         List<Long> authorId,
                                         List<Long> studentId,
                                         Long categoryId,
-                                        Long orderNumber) throws IOException {
+                                        List<Long> orderId) throws IOException {
+
+        List<Author> authors = authorRepository.findAllById(authorId);
+        if (authors.isEmpty()) {
+            throw new NoSuchElementException("Not found authors!");
+        }
+
+        List<Student> students = studentRepository.findAllById(studentId);
+        if (students.isEmpty()) {
+            throw new NoSuchElementException("Not found students!");
+        }
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementException("Not found category by id=" + categoryId));
+
+        List<Order> orders = orderRepository.findAllById(orderId);
+        if (orders == null) {
+            throw new NoSuchElementException("Not found order!");
+        }
+
         String imageUrl;
         try {
             imageUrl = s3Service.uploadFile(bucketName, image.getOriginalFilename(),
                     image.getInputStream(), image.getSize());
         } catch (IOException e) {
-            throw new IOException("Şəkili yükləmək mümkün olmadı: " + e);
+            throw new IOException("Could not load image: " + e);
         }
         try {
-            List<Author> authors = authorRepository.findAllById(authorId);
-
-            if (authors.isEmpty()) {
-                throw new NoSuchElementException("Not found authors!");
-            }
-
-            List<Student> students = studentRepository.findAllById(studentId);
-            if (students.isEmpty()) {
-                throw new NoSuchElementException("Not found students!");
-            }
-
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new NoSuchElementException("Not found category by id=" + categoryId));
-
-            Order order = orderRepository.findById(orderNumber).get();
-            if (order == null) {
-                throw new NoSuchElementException("Not found order!");
-            }
-
-            System.out.println(imageUrl);
-
             Book book = new Book();
+            for (Long orderIds:orderId){
+                Order order=orderRepository.findById(orderIds)
+                        .orElseThrow(() -> new NoSuchElementException("Not found order by id=" + orderIds));
+                order.getBooks().add(book);
+                orderRepository.save(order);
+            }
             book.setName(name);
             book.setIsbn(isbn);
             book.setPublishedYear(publishedYear);
@@ -92,11 +93,10 @@ public class BookServiceImpl implements BookServiceInter {
             book.setAuthors(authors);
             book.setStudents(students);
             book.setCategory(category);
-            book.setOrder(order);
-
-            BookDTO bookDTO = bookMapper.bookToBookDTO(book);
-
+            book.setOrders(orders);
             bookRepository.save(book);
+            orderRepository.saveAll(orders);
+            BookDTO bookDTO = bookMapper.bookToBookDTO(book);
             log.info("Successfully created{}", bookDTO);
             return new ResponseEntity<>(bookDTO, HttpStatus.OK);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class BookServiceImpl implements BookServiceInter {
     }
 
     @Override
-    public ResponseEntity<Book> update(Long id,
+    public ResponseEntity<BookDTO> update(Long id,
                                        String name,
                                        String isbn,
                                        String publishedYear,
@@ -115,7 +115,7 @@ public class BookServiceImpl implements BookServiceInter {
                                        List<Long> authorId,
                                        Long categoryId,
                                        List<Long> studentId,
-                                       Long orderNumber) throws IOException {
+                                       List<Long> orderId) throws IOException {
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Not found author by id=" + id));
@@ -141,6 +141,17 @@ public class BookServiceImpl implements BookServiceInter {
             students.add(findStudentById);
         }
 
+        List<Order> orders = orderRepository.findAllById(orderId);
+        if (orders == null) {
+            throw new NoSuchElementException("Not found order!");
+        }
+        for (Long orderIds:orderId){
+            Order order=orderRepository.findById(orderIds)
+                    .orElseThrow(() -> new NoSuchElementException("Not found order by id=" + orderIds));
+            order.getBooks().add(book);
+        }
+
+
         String imageUrl;
         try {
             imageUrl = s3Service.uploadFile(bucketName, image.getOriginalFilename(),
@@ -158,9 +169,11 @@ public class BookServiceImpl implements BookServiceInter {
             book.setAuthors(authors);
             book.setCategory(category);
             book.setStudents(students);
+            book.setOrders(orders);
             bookRepository.save(book);
+            BookDTO bookDTO=bookMapper.bookToBookDTO(book);
             log.info("Successfully updated{}", book);
-            return new ResponseEntity<>(book, HttpStatus.OK);
+            return new ResponseEntity<>(bookDTO, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error occurred when updating book!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -207,6 +220,12 @@ public class BookServiceImpl implements BookServiceInter {
         try {
             Book book = bookRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException("Not found book by id=" + id));
+
+            for (Order order: book.getOrders()){
+                order.getBooks().remove(book);
+            }
+            orderRepository.saveAll(book.getOrders());
+
             bookRepository.delete(book);
             log.info("Successfully deleted{}", book);
             return new ResponseEntity<>("Successfully deleted{" + book + "}", HttpStatus.OK);

@@ -23,7 +23,6 @@ public class Book {
     private String publishedYear;
     private String image;
     private Long stockCount;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "book_author",
@@ -31,12 +30,12 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+//    @JsonIgnore
     private List<Author> authors=new ArrayList<>();
 
     @ManyToOne()
     @JoinColumn(name = "category_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Category category;
 
     @ManyToMany()
@@ -48,10 +47,10 @@ public class Book {
     @JsonIgnore
     private List<Student> students;
 
-    @ManyToOne()
-    @JoinColumn(name = "orders_id")
+    @ManyToMany(mappedBy = "books")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Order order;
+    private List<Order> orders;
 
     @Override
     public String toString() {

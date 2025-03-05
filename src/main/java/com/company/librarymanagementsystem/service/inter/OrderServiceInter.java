@@ -13,15 +13,20 @@ import java.util.List;
 public interface OrderServiceInter {
     ResponseEntity<OrderRequest> save(OrderRequest orderRequest, List<Long> bookIds, Long studentId);
 
+    ResponseEntity<OrderDTO> returnOrder(Long orderNumber,LocalDate deliveryDate);
+
     ResponseEntity<Order> update(Long id,
                                  Long orderNumber,
                                  LocalDate localDate,
+                                 LocalDate deliveryDate,
                                  List<Long> bookIds,
                                  Long studentId);
 
     ResponseEntity<List<OrderDTO>> getAllOrders();
 
-    ResponseEntity<OrderDTO> getOrderByOrderNumber(Long orderNumber);
+    ResponseEntity<OrderDTO> getById(Long id);
 
-    ResponseEntity<String> delete(Long orderNumber);
+    ResponseEntity<OrderDTO> getByOrderName(Long id);
+
+    ResponseEntity<String> delete(Long id);
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CategoryDTO {
+    private Long id;
     private String name;
     private List<Book> books;
 }

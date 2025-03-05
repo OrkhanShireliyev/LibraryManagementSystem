@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public interface CategoryServiceInter {
 
-    ResponseEntity<CategoryRequest> save(CategoryRequest categoryRequest);
+    ResponseEntity<Category> save(CategoryRequest categoryRequest, List<Long> bookIds);
 
     ResponseEntity<Category> update(Long id,String name,List<Long> bookId);
 

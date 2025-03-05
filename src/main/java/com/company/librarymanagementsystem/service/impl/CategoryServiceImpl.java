@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,49 +29,75 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     private final BookRepository bookRepository;
 
     @Override
-    public ResponseEntity<CategoryRequest> save(CategoryRequest categoryRequest) {
+    public ResponseEntity<Category> save(CategoryRequest categoryRequest, List<Long> bookIds) {
         try {
+            List<Book> books = bookRepository.findAllById(bookIds);
+            if (books.isEmpty()) {
+                throw new NoSuchElementException("Not found books!");
+            }
             Category category = categoryMapper.categoryRequestToCategory(categoryRequest);
+
+            if (category.getBooks() == null) {
+                category.setBooks(new ArrayList<>());
+            }
+
+            for (Book book : books) {
+                if (book.getCategory() != null) {
+                    book.getCategory().getBooks().remove(book);
+                }
+                book.setCategory(category);
+                log.info("The book has been assigned to a new category: {}", book.getName());
+            }
+            category.getBooks().addAll(books);
             categoryRepository.save(category);
-            log.info("Successfully created{}", category);
-            return new ResponseEntity<>(categoryRequest, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.CREATED).body(category);
         } catch (Exception e) {
-            log.error("Error occurred when creating category!");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error occurred when creating category: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @Override
-    public ResponseEntity<Category> update(Long id, String name,List<Long> bookId) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
-
-        List<Book> books=new ArrayList<>();
-        for (Long bookById:bookId){
-            Book findBookById=bookRepository.findById(bookById)
-                 .orElseThrow(()->new NoSuchElementException("Not found book by id=" + bookById));
-            books.add(findBookById);
-        }
-
+    public ResponseEntity<Category> update(Long id, String name, List<Long> bookIds) {
         try {
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("Not found category by id=" + id));
+
+            List<Book> books = bookRepository.findAllById(bookIds);
+            if (books.isEmpty()) {
+                throw new RuntimeException("Not found books!");
+            }
+
+            for (Book oldBook : category.getBooks()) {
+                oldBook.setCategory(null);
+            }
+            category.getBooks().clear();
+
+            for (Book book : books) {
+                book.setCategory(category);
+                log.info("The book has been assigned to a new category: {}", book.getName());
+            }
+
+            category.setBooks(books);
             category.setName(name);
+
             categoryRepository.save(category);
             log.info("Successfully updated{}", category);
             return new ResponseEntity<>(category, HttpStatus.OK);
+
         } catch (Exception e) {
-            log.error("Error occurred when updating category{}",category);
+            log.error("Error occurred when updating category by id=" + id);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<List<CategoryDTO>> getAllCategory() {
-        List<Category> categories = categoryRepository.findAll();
-        if (categories.isEmpty()) {
-            throw new NoSuchElementException("Not found categories!");
-        }
-
         try {
+            List<Category> categories = categoryRepository.findAll();
+            if (categories==null || categories.isEmpty()) {
+                throw new NoSuchElementException("Not found categories!");
+            }
             List<CategoryDTO> categoryDTOS = new ArrayList<>();
             for (Category category : categories) {
                 CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
@@ -88,30 +113,32 @@ public class CategoryServiceImpl implements CategoryServiceInter {
 
     @Override
     public ResponseEntity<CategoryDTO> getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
-
         try {
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
+
             CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
+
             log.info("Successfully retrieved{}", categoryDTO);
             return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred when retrieving category{}",category);
+            log.error("Error occurred when retrieving category by id="+id);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
         try {
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
+
             categoryRepository.deleteById(id);
-            log.info("Successfully deleted{}", category);
-            return new ResponseEntity<>("Successfully deleted{"+category+"}", HttpStatus.OK);
+            log.info("Successfully deleted category!");
+            return new ResponseEntity<>("Successfully deleted category!", HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error occurred when deleting category by id=" + id);
-            return new ResponseEntity<>("Error occurred when deleting{"+category+"}", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error occurred when deleting category!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

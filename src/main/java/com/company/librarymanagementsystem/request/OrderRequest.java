@@ -18,4 +18,7 @@ public class OrderRequest {
     private Long orderNumber;
 
     private LocalDate localDate;
+
+    private LocalDate deliveryTime;
+
 }

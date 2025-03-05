@@ -25,5 +25,5 @@ public class BookDTO {
     private List<Author> authors;
     private Category category;
     private List<Student> students;
-    private Order order;
+    private List<Order> orders;
 }

@@ -21,5 +21,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="5-2" author="Orkhan Shireliyev">
+        <addColumn tableName="orders">
+            <column name="deliveryTime" type="date"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="5-3" author="Orkhan Shireliyev">
+        <renameColumn tableName="orders" newColumnName="delivery_time" oldColumnName="deliveryTime"/>
+    </changeSet>
 
 </databaseChangeLog>

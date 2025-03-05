@@ -24,10 +24,5 @@
             <column name="category_id" type="bigint"/>
         </addColumn>
     </changeSet>
-    <changeSet id="2-2" author="Orkhan Shireliyev">
-        <addColumn tableName="book">
-            <column name="orders_id" type="bigint"/>
-        </addColumn>
-    </changeSet>
 
 </databaseChangeLog>

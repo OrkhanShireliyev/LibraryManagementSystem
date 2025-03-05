@@ -22,5 +22,7 @@
 
     <!-- 3. Xarici açarlar (Foreign Keys) -->
     <include file="db.changelog/v1.0/04-02-25-add-foreign-keys.xml"/>
+    <include file="db.changelog/v1.0/13-02-2025-create-table-order-books.xml"/>
+    <include file="db.changelog/v1.0/18-02-25-create-table-user.xml"/>
 
 </databaseChangeLog>

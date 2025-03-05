@@ -15,9 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderDTO {
+
+    private Long id;
+
     private Long orderNumber;
 
     private LocalDate localDate;
+
+    private LocalDate deliveryTime;
 
     private List<Book> books;
 

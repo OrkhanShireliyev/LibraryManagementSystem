@@ -26,9 +26,9 @@ public interface BookServiceInter {
                                      List<Long> authorId,
                                      List<Long> studentId,
                                      Long categoryId,
-                                     Long orderNumber) throws IOException;
+                                     List<Long> orderId) throws IOException;
 
-    ResponseEntity<Book> update(Long id,
+    ResponseEntity<BookDTO> update(Long id,
                                 String name,
                                 String isbn,
                                 String publishedYear,
@@ -37,7 +37,7 @@ public interface BookServiceInter {
                                 List<Long> authorId,
                                 Long categoryId,
                                 List<Long> studentId,
-                                Long orderNumber
+                                List<Long> orderId
                                 ) throws IOException;
 
     ResponseEntity<List<BookDTO>> getAllBooks();

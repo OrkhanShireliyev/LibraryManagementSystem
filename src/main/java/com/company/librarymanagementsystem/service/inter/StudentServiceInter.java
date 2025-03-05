@@ -1,7 +1,6 @@
 package com.company.librarymanagementsystem.service.inter;
 
 import com.company.librarymanagementsystem.dto.StudentDTO;
-import com.company.librarymanagementsystem.model.Student;
 import com.company.librarymanagementsystem.request.StudentRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,15 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface StudentServiceInter{
+public interface StudentServiceInter {
 
-    ResponseEntity<StudentRequest> save(StudentRequest studentRequest);
+    ResponseEntity<StudentDTO> save(StudentRequest studentRequest, List<Long> bookIds, List<Long> orderIds);
 
-    ResponseEntity<Student> update(Long id,
-                                   String registryCode,
-                                   String name,
-                                   String surname,
-                                   int age,
+    ResponseEntity<StudentDTO> update(Long id,
+                                   StudentRequest studentRequest,
                                    List<Long> bookId,
                                    List<Long> orderId);
 
