@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres-service:
+    image: postgres:15
+    container_name: postgres-service
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "orkhan"
+      POSTGRES_DB: "librarymanagementsystem"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+        - mynetwork
+  app:
+    build: .
+    container_name: library-management
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/librarymanagementsystem
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "orkhan"
+    depends_on:
+      - postgres-service
+    ports:
+      - "9090:9090"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  postgres-data:  # volume tərifi
