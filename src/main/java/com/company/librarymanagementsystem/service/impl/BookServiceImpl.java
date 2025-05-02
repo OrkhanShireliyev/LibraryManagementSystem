@@ -118,7 +118,7 @@ public class BookServiceImpl implements BookServiceInter {
                                        List<Long> orderId) throws IOException {
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Not found author by id=" + id));
+                .orElseThrow(() -> new NoSuchElementException("Not found book by id=" + id));
 
         List<Author> authors = new ArrayList<>();
         for (Long authorById : authorId) {
@@ -134,10 +134,11 @@ public class BookServiceImpl implements BookServiceInter {
 
         List<Student> students = new ArrayList<>();
         for (Long studentById : studentId) {
-            Student findStudentById = studentRepository.findById(studentById).get();
-            if (findStudentById == null) {
-                throw new NoSuchElementException("Not found student by id=" + studentById);
-            }
+            Student findStudentById = studentRepository.findById(studentById)
+                    .orElseThrow(() -> new NoSuchElementException("Not found student by id=" + studentById));
+//            if (findStudentById == null) {
+//                throw new NoSuchElementException("Not found student by id=" + studentById);
+//            }
             students.add(findStudentById);
         }
 
@@ -228,10 +229,11 @@ public class BookServiceImpl implements BookServiceInter {
 
             bookRepository.delete(book);
             log.info("Successfully deleted{}", book);
-            return new ResponseEntity<>("Successfully deleted{" + book + "}", HttpStatus.OK);
+            return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error occured while deleting book by id=" + id);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

@@ -95,7 +95,7 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     public ResponseEntity<List<CategoryDTO>> getAllCategory() {
         try {
             List<Category> categories = categoryRepository.findAll();
-            if (categories==null || categories.isEmpty()) {
+            if (categories == null || categories.isEmpty()) {
                 throw new NoSuchElementException("Not found categories!");
             }
             List<CategoryDTO> categoryDTOS = new ArrayList<>();
@@ -115,14 +115,14 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     public ResponseEntity<CategoryDTO> getCategoryById(Long id) {
         try {
             Category category = categoryRepository.findById(id)
-                    .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
+                    .orElseThrow(() -> new NoSuchElementException("Not found category by id=" + id));
 
             CategoryDTO categoryDTO = categoryMapper.categoryToCategoryDTO(category);
 
             log.info("Successfully retrieved{}", categoryDTO);
             return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred when retrieving category by id="+id);
+            log.error("Error occurred when retrieving category by id=" + id);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -131,7 +131,7 @@ public class CategoryServiceImpl implements CategoryServiceInter {
     public ResponseEntity<String> delete(Long id) {
         try {
             Category category = categoryRepository.findById(id)
-                    .orElseThrow(()->new NoSuchElementException("Not found category by id=" + id));
+                    .orElseThrow(() -> new NoSuchElementException("Not found category by id=" + id));
 
             categoryRepository.deleteById(id);
             log.info("Successfully deleted category!");

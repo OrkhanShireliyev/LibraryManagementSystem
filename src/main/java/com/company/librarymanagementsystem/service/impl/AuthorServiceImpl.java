@@ -1,11 +1,9 @@
 package com.company.librarymanagementsystem.service.impl;
 
 import com.company.librarymanagementsystem.dto.AuthorDTO;
-import com.company.librarymanagementsystem.exception.NotFoundException;
 import com.company.librarymanagementsystem.mapper.AuthorMapper;
 import com.company.librarymanagementsystem.model.Author;
 import com.company.librarymanagementsystem.model.Book;
-import com.company.librarymanagementsystem.model.Order;
 import com.company.librarymanagementsystem.repository.AuthorRepository;
 import com.company.librarymanagementsystem.repository.BookRepository;
 import com.company.librarymanagementsystem.request.AuthorRequest;
@@ -15,11 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -37,7 +32,7 @@ public class AuthorServiceImpl implements AuthorServiceInter {
         List<Book> books = bookRepository.findAllById(bookId);
 
         if (books.isEmpty()) {
-            throw new NotFoundException("Not found books!");
+            throw new NoSuchElementException("Not found books!");
         }
 
         try {
@@ -74,9 +69,13 @@ public class AuthorServiceImpl implements AuthorServiceInter {
             throw new RuntimeException("Not found books!");
         }
 
+        books.stream().forEach(System.out::println);
+
         try{
-            for (Book book : author.getBooks()) {
-                book.getAuthors().remove(author);
+            for (Book book : Optional.ofNullable(author.getBooks()).orElse(Collections.emptyList())) {
+                if (book.getAuthors() != null) {
+                    book.getAuthors().remove(author);
+                }
             }
 
             author.getBooks().clear();
@@ -136,15 +135,17 @@ public class AuthorServiceImpl implements AuthorServiceInter {
     }
 
     @Override
-    public void delete(Long id) {
+    public ResponseEntity<String> delete(Long id) {
         Author author=authorRepository.findById(id)
                 .orElseThrow(()->new NoSuchElementException("Not found author by id="+id));
         System.out.println(author);
         try{
             authorRepository.deleteById(id);
             log.info("Successfully deleted{}",author);
+            return new ResponseEntity<>("Author deleted successfully", HttpStatus.OK);
         }catch (Exception e){
             log.error("Error occurred when deleting author by id="+id);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

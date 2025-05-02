@@ -19,5 +19,5 @@ public interface AuthorServiceInter {
 
     ResponseEntity<AuthorDTO> getAuthorById(Long id);
 
-    void delete(Long id);
+    ResponseEntity<String> delete(Long id);
 }

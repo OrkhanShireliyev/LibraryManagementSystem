@@ -23,7 +23,7 @@ public class JwtTokenProvider {
   @Value("${jwtExpirationInMs}")
   private int jwtExpirationInMs;
 
-  public String generateToken(Authentication authentication) {
+  public String  generateToken(Authentication authentication) {
     UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
     Date now = new Date();

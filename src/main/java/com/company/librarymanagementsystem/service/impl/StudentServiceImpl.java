@@ -37,25 +37,23 @@ public class StudentServiceImpl implements StudentServiceInter {
     @Override
     @Transactional
     public ResponseEntity<StudentDTO> save(StudentRequest studentRequest, List<Long> bookIds, List<Long> orderIds) {
+        try {
         List<Book> books = bookRepository.findAllById(bookIds);
 
         List<Order> orders = orderRepository.findAllById(orderIds);
 
-        try {
             Student student = studentMapper.studentRequestToStudent(studentRequest);
-
             for (Book book : books) {
                 book.getStudents().add(student);
             }
-
             for (Order order : orders) {
                 order.setStudent(student);
             }
-
             student.setBooks(books);
             student.setOrders(orders);
             studentRepository.save(student);
             StudentDTO studentDTO=studentMapper.studentToStudentDTO(student);
+            System.out.println(studentDTO);
             log.info("Successfully created{}", student);
             return new ResponseEntity<>(studentDTO, HttpStatus.OK);
         } catch (Exception e) {

@@ -48,8 +48,8 @@ public class OrderServiceImpl implements OrderServiceInter {
                 .orElseThrow(() -> new NoSuchElementException("Not found student by id=" + studentId));
 
         for (Book book : books) {
-            if (book.getStockCount()<=0){
-                throw new ArithmeticException(StringUtils.capitalize(book.getName())+" book run out!");
+            if (book.getStockCount() <= 0) {
+                throw new ArithmeticException(StringUtils.capitalize(book.getName()) + " book run out!");
             }
             book.setStockCount(book.getStockCount() - 1);
         }
@@ -66,25 +66,26 @@ public class OrderServiceImpl implements OrderServiceInter {
             log.info("Successfully created {}", order);
             return new ResponseEntity<>(orderRequest, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred when creating order!",e);
+            log.error("Error occurred when creating order!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Transactional
-    public ResponseEntity<OrderDTO> returnOrder(Long orderNumber,LocalDate deliveryDate) {
+    public ResponseEntity<OrderDTO> returnOrder(Long orderNumber, LocalDate deliveryDate) {
         Order order = orderRepository.findOrderByOrderNumber(orderNumber);
-                if(order==null){
-                    new NoSuchElementException("Not found order with orderNumber=" + orderNumber);
-                };
+        if (order == null) {
+            new NoSuchElementException("Not found order with orderNumber=" + orderNumber);
+        }
+        ;
 
-        List<Book> books=new ArrayList<>();
+        List<Book> books = new ArrayList<>();
 
-        for (Book book: order.getBooks()){
-            Long id=book.getId();
-            book=bookRepository.findById(id)
+        for (Book book : order.getBooks()) {
+            Long id = book.getId();
+            book = bookRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException("Not found book with id=" + id));
-            book.setStockCount(book.getStockCount()+1);
+            book.setStockCount(book.getStockCount() + 1);
             books.add(book);
         }
 
@@ -93,18 +94,17 @@ public class OrderServiceImpl implements OrderServiceInter {
             System.out.println(order);
             orderRepository.save(order);
             bookRepository.saveAll(books);
-            OrderDTO orderDTO=orderMapper.orderToOrderDTO(order);
+            OrderDTO orderDTO = orderMapper.orderToOrderDTO(order);
             log.info("The book was successfully delivered! {}", order);
             return new ResponseEntity<>(orderDTO, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred when delivering order!",e);
+            log.error("Error occurred when delivering order!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Order> update(Long id, Long orderNumber, LocalDate localDate, LocalDate deliveryDate, List<Long> bookIds, Long studentId) {
-        System.out.println("order update metoduna daxil oldu");
         List<Book> books = new ArrayList<>();
         Book book;
 
@@ -118,10 +118,8 @@ public class OrderServiceImpl implements OrderServiceInter {
                 .orElseThrow(() -> new NoSuchElementException("Not found student by id=" + studentId));
 
         try {
-            System.out.println("try daxil oldu");
             Order order = orderRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException("Not found order by id=" + id));
-            System.out.println("Order id: "+id);
             order.setOrderNumber(orderNumber);
             order.setLocalDate(localDate);
             order.setDeliveryTime(deliveryDate);
@@ -131,7 +129,7 @@ public class OrderServiceImpl implements OrderServiceInter {
             log.info("Successfully created {}", order);
             return new ResponseEntity<>(order, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred when updating order!",e);
+            log.error("Error occurred when updating order!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -152,55 +150,63 @@ public class OrderServiceImpl implements OrderServiceInter {
             log.info("Successfully retrieved {}", orderDTOS);
             return new ResponseEntity<>(orderDTOS, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error occurred when retrieving orders!",e);
+            log.error("Error occurred when retrieving orders!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<OrderDTO> getById(Long id) {
-        Order order = orderRepository.findById(id).get();
-        if (order == null) {
-            throw new NoSuchElementException("Not found order id=" + id);
-        }
         try {
+            Order order = orderRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("Not found order with id=" + id));
+
             OrderDTO orderDTO = orderMapper.orderToOrderDTO(order);
-            log.info("Successfully retrieved {}", orderDTO);
+            log.info("Successfully retrieved order: {}", orderDTO);
             return new ResponseEntity<>(orderDTO, HttpStatus.OK);
+
+        } catch (NoSuchElementException e) {
+            log.error("Order not found with id: {}", id, e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("Error occurred when retrieving order by id!",e);
+            log.error("Error occurred when retrieving order by id!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<OrderDTO> getByOrderName(Long orderNumber) {
-        Order order = orderRepository.findOrderByOrderNumber(orderNumber);
-        if (order == null) {
-            throw new NoSuchElementException("Not found order orderNumber=" + orderNumber);
-        }
         try {
+            Order order = orderRepository.findOrderByOrderNumber(orderNumber);
+            if (order == null) {
+                throw new NoSuchElementException("Not found order orderNumber=" + orderNumber);
+            }
             OrderDTO orderDTO = orderMapper.orderToOrderDTO(order);
             log.info("Successfully retrieved {}", orderDTO);
             return new ResponseEntity<>(orderDTO, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            log.error("Order not found with id: {}", orderNumber, e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("Error occurred when retrieving order by orderNumber!",e);
+            log.error("Error occurred when retrieving order by id!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-        Order order = orderRepository.findById(id).get();
-        if (order == null) {
-            throw new NoSuchElementException("Not found order id=" + id);
-        }
         try {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Not found order with id=" + id));
+
             orderRepository.delete(order);
             log.info("Successfully deleted {}", order);
             return new ResponseEntity<>("Successfully deleted!", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            log.error("Order not found with id: {}", id, e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("Error occurred when deleting order!",e);
+            log.error("Error occurred when retrieving order by id!", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
